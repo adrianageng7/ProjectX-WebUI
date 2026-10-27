@@ -1,0 +1,796 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark light">
+<title>System Overview — ProjectX</title>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+:root {
+    /* DEFAULT DARK MODE */
+    --bg: #18151e;
+    --paper: #24202b;
+    --ink: #fffaf4;
+    --muted: #aaa2ad;
+    --line: #0d0b10;
+    --shadow: 4px 5px 0 #08070a;
+    --panel-alt: #302b38;
+    
+    /* DEFAULT COLOR ACCENTS (Retro Pop) */
+    --pink: #ff5ca8;
+    --yellow: #ffe14a;
+    --cyan: #55dfff;
+    --lime: #b8f34a;
+    --purple: #9b7cff;
+    --orange: #ff9955;
+    
+    --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+:root[data-theme="light"] {
+    --bg: #fff6e8;
+    --paper: #fffdf8;
+    --ink: #17151a;
+    --muted: #77717a;
+    --line: #17151a;
+    --shadow: 4px 5px 0 #17151a;
+    --panel-alt: #e8e5da;
+}
+
+/* ===== COLOR SCHEMES ===== */
+:root[data-color="synthwave"] {
+    --pink: #ff2d95;
+    --yellow: #ff2d95;
+    --cyan: #00e5ff;
+    --lime: #ff2d95;
+    --purple: #c538ff;
+    --orange: #ff6b35;
+}
+:root[data-color="synthwave"][data-theme="dark"],
+:root[data-color="synthwave"]:not([data-theme]) {
+    --panel-alt: #2a1035;
+}
+
+:root[data-color="toxic"] {
+    --pink: #ff4444;
+    --yellow: #39ff14;
+    --cyan: #39ff14;
+    --lime: #39ff14;
+    --purple: #ff8800;
+    --orange: #ff6600;
+}
+:root[data-color="toxic"][data-theme="dark"],
+:root[data-color="toxic"]:not([data-theme]) {
+    --panel-alt: #1a2810;
+}
+
+:root[data-color="arctic"] {
+    --pink: #64b5f6;
+    --yellow: #40c4ff;
+    --cyan: #80d8ff;
+    --lime: #82b1ff;
+    --purple: #448aff;
+    --orange: #29b6f6;
+}
+:root[data-color="arctic"][data-theme="dark"],
+:root[data-color="arctic"]:not([data-theme]) {
+    --panel-alt: #1a2535;
+}
+
+:root[data-color="sunset"] {
+    --pink: #ff1744;
+    --yellow: #ff6d00;
+    --cyan: #ffab40;
+    --lime: #ff9100;
+    --purple: #ff5252;
+    --orange: #ff3d00;
+}
+:root[data-color="sunset"][data-theme="dark"],
+:root[data-color="sunset"]:not([data-theme]) {
+    --panel-alt: #351a10;
+}
+
+:root[data-color="lavender"] {
+    --pink: #f48fb1;
+    --yellow: #b388ff;
+    --cyan: #ea80fc;
+    --lime: #ce93d8;
+    --purple: #7c4dff;
+    --orange: #e040fb;
+}
+:root[data-color="lavender"][data-theme="dark"],
+:root[data-color="lavender"]:not([data-theme]) {
+    --panel-alt: #271a35;
+}
+
+*{box-sizing:border-box;outline:none}
+body{
+    margin:0;
+    padding:18px;
+    min-height:100vh;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--font);
+    -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1080px;margin:auto}
+button{font:inherit}
+
+/* HEADER */
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:15px;
+    margin-bottom:20px;
+}
+.eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:5px 9px;
+    border:2px solid var(--line);
+    border-radius:999px;
+    background:var(--lime);
+    box-shadow:3px 3px 0 var(--line);
+    color:#17151a;
+    font-size:9px;
+    font-weight:950;
+    text-transform:uppercase;
+    letter-spacing:.8px;
+    transform:rotate(-2deg);
+}
+.live-dot{width:6px;height:6px;border-radius:50%;background:#17151a;animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.brand h1{
+    margin:10px 0 0;
+    font-size:30px;
+    line-height:1;
+    letter-spacing:-1.5px;
+    font-weight:950;
+}
+.device-name{
+    margin-top:7px;
+    color:var(--muted);
+    font-size:11px;
+    font-weight:700;
+}
+.controls{display:flex;gap:8px}
+.btn{
+    width:39px;height:36px;
+    border:2px solid var(--line);
+    border-radius:11px;
+    background:var(--paper);
+    color:var(--ink);
+    box-shadow:3px 3px 0 var(--line);
+    display:grid;
+    place-items:center;
+    cursor:pointer;
+    transition:.12s;
+}
+.btn:first-child{transform:rotate(2deg)}
+.btn:last-child{transform:rotate(-2deg)}
+.btn:hover{background:var(--yellow);transform:translate(-1px,-2px) rotate(0)}
+.btn:active{transform:translate(2px,2px);box-shadow:none}
+
+/* HERO */
+.device-card{
+    position:relative;
+    display:grid;
+    grid-template-columns:1fr auto;
+    gap:20px;
+    align-items:center;
+    padding:19px;
+    margin-bottom:19px;
+    background:var(--yellow);
+    color:#17151a;
+    border:2px solid var(--line);
+    border-radius:17px 12px 18px 10px;
+    box-shadow:var(--shadow);
+    transform:rotate(-.3deg);
+}
+.device-card:after{
+    content:"DEVICE";
+    position:absolute;
+    right:18px;
+    top:-13px;
+    padding:4px 8px;
+    background:var(--pink);
+    border:2px solid var(--line);
+    border-radius:7px;
+    box-shadow:2px 2px 0 var(--line);
+    font-size:8px;
+    font-weight:950;
+    transform:rotate(4deg);
+}
+.device-card .kpi-label{color:#17151a}
+.device-card .device-meta{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:11px;
+}
+.chip{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:6px 9px;
+    background:var(--paper);
+    color:var(--ink);
+    border:2px solid var(--line);
+    border-radius:999px;
+    box-shadow:2px 2px 0 var(--line);
+    font-size:9px;
+    font-weight:900;
+}
+.uptime{text-align:right}
+.uptime-label{
+    font-size:9px;
+    font-weight:950;
+    letter-spacing:1px;
+    text-transform:uppercase;
+}
+.uptime-value{
+    margin-top:4px;
+    font-size:23px;
+    line-height:1;
+    font-weight:950;
+    letter-spacing:-1px;
+}
+
+/* KPI STICKERS */
+.grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+    margin-bottom:17px;
+}
+.card{
+    background:var(--paper);
+    border:2px solid var(--line);
+    color:var(--ink);
+    box-shadow:var(--shadow);
+}
+.kpi-card{
+    position:relative;
+    min-height:162px;
+    padding:15px;
+    border-radius:16px 11px 15px 10px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+}
+.kpi-card:nth-child(1){transform:rotate(-1.1deg)}
+.kpi-card:nth-child(2){transform:rotate(1deg)}
+.kpi-card:nth-child(3){transform:rotate(-.6deg)}
+.kpi-card:nth-child(4){transform:rotate(1.2deg)}
+.kpi-card:after{
+    position:absolute;
+    top:-12px;
+    right:14px;
+    padding:3px 7px;
+    border:2px solid var(--line);
+    border-radius:6px;
+    box-shadow:2px 2px 0 var(--line);
+    color:#17151a;
+    font-size:7px;
+    font-weight:950;
+    letter-spacing:.7px;
+}
+.kpi-card:nth-child(1):after{content:"MEMORY";background:var(--purple);transform:rotate(5deg)}
+.kpi-card:nth-child(2):after{content:"POWER";background:var(--lime);transform:rotate(-4deg)}
+.kpi-card:nth-child(3):after{content:"PROCESS";background:var(--pink);transform:rotate(4deg)}
+.kpi-card:nth-child(4):after{content:"GRAPHICS";background:var(--cyan);transform:rotate(-4deg)}
+.kpi-top{display:flex;justify-content:space-between;align-items:flex-start}
+.kpi-label{
+    color:var(--muted);
+    font-size:9px;
+    font-weight:950;
+    letter-spacing:.9px;
+    text-transform:uppercase;
+}
+.kpi-icon{
+    width:29px;height:29px;
+    display:grid;
+    place-items:center;
+    border:2px solid var(--line);
+    border-radius:9px;
+    color:#17151a;
+    box-shadow:2px 2px 0 var(--line);
+}
+.kpi-card:nth-child(1) .kpi-icon{background:var(--purple)}
+.kpi-card:nth-child(2) .kpi-icon{background:var(--lime)}
+.kpi-card:nth-child(3) .kpi-icon{background:var(--pink)}
+.kpi-card:nth-child(4) .kpi-icon{background:var(--cyan)}
+.kpi-val{
+    margin-top:7px;
+    font-size:25px;
+    line-height:1;
+    font-weight:950;
+    letter-spacing:-1.3px;
+}
+.kpi-sub{
+    margin-top:5px;
+    color:var(--muted);
+    font-size:10px;
+    font-weight:750;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+.progress{
+    height:11px;
+    padding:2px;
+    margin-top:12px;
+    border:2px solid var(--line);
+    border-radius:999px;
+    background:var(--panel-alt,#e8e5da);
+}
+.progress>i{
+    display:block;
+    height:100%;
+    border-radius:999px;
+    background:var(--purple);
+    transition:width .4s;
+}
+.battery-progress>i{background:var(--lime)}
+.chart-box{
+    height:44px;
+    display:flex;
+    align-items:flex-end;
+    gap:4px;
+    margin-top:11px;
+    padding:3px;
+    border:2px solid var(--line);
+    border-radius:8px;
+    background:var(--panel-alt,#e8e5da);
+}
+.chart-bar{
+    flex:1;
+    min-height:4px;
+    border:1px solid var(--line);
+    border-radius:4px 4px 2px 2px;
+    background:var(--pink);
+    transition:height .3s;
+}
+.chart-bar:last-child{background:var(--cyan)}
+
+/* LOWER STICKER PANELS */
+.container{
+    display:grid;
+    grid-template-columns:1.15fr .85fr;
+    gap:16px;
+}
+.section-card{
+    position:relative;
+    padding:15px;
+    border-radius:14px 18px 11px 15px;
+}
+.section-card:first-child{transform:rotate(.25deg)}
+.section-card:last-child{transform:rotate(-.35deg)}
+.section-card:first-child:before{
+    content:"NETWORK";
+    position:absolute;
+    left:15px;
+    top:-12px;
+    padding:4px 8px;
+    background:var(--cyan);
+    color:#17151a;
+    border:2px solid var(--line);
+    border-radius:6px;
+    box-shadow:2px 2px 0 var(--line);
+    font-size:8px;
+    font-weight:950;
+    transform:rotate(-3deg);
+}
+.section-card:last-child:before{
+    content:"SYSTEM";
+    position:absolute;
+    right:16px;
+    top:-12px;
+    padding:4px 8px;
+    background:var(--orange);
+    color:#17151a;
+    border:2px solid var(--line);
+    border-radius:6px;
+    box-shadow:2px 2px 0 var(--line);
+    font-size:8px;
+    font-weight:950;
+    transform:rotate(3deg);
+}
+.section-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    padding-bottom:9px;
+    border-bottom:2px dashed var(--line);
+    margin-bottom:2px;
+}
+.section-title{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:11px;
+    font-weight:950;
+    text-transform:uppercase;
+}
+.section-title i{
+    width:26px;height:26px;
+    display:grid;
+    place-items:center;
+    border:2px solid var(--line);
+    border-radius:8px;
+    color:#17151a;
+    background:var(--yellow);
+}
+.section-caption{
+    font-size:8px;
+    color:var(--muted);
+    font-weight:900;
+}
+.info-table{width:100%;border-collapse:collapse}
+.info-table th{
+    padding:8px 0 7px;
+    color:var(--muted);
+    border-bottom:1px solid var(--line);
+    font-size:8px;
+    font-weight:950;
+    text-transform:uppercase;
+}
+.info-table td{
+    padding:10px 0;
+    border-bottom:1px dashed var(--line);
+    font-size:11px;
+    font-weight:800;
+}
+.info-table tr:last-child td{border-bottom:0}
+.text-right{text-align:right}
+.iface{display:flex;align-items:center;gap:8px}
+.iface-icon{
+    width:28px;height:28px;
+    display:grid;
+    place-items:center;
+    border:2px solid var(--line);
+    border-radius:8px;
+    background:var(--cyan);
+    color:#17151a;
+    box-shadow:2px 2px 0 var(--line);
+}
+.iface-name{font-weight:950}
+.ip{margin-top:2px;color:var(--muted);font-size:9px;font-weight:650}
+.system-list{display:flex;flex-direction:column}
+.system-row{
+    display:grid;
+    grid-template-columns:80px 1fr;
+    gap:12px;
+    padding:10px 0;
+    border-bottom:1px dashed var(--line);
+    font-size:11px;
+}
+.system-row:last-child{border-bottom:0}
+.system-key{color:var(--muted);font-weight:800}
+.system-value{text-align:right;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.accent{color:var(--purple)}
+.green{color:#55a800}
+.red{color:var(--pink)}
+
+/* MOBILE */
+@media(max-width:900px){
+    .grid{grid-template-columns:repeat(2,1fr)}
+    .container{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+    body{padding:12px}
+    .brand h1{font-size:25px}
+    .device-card{grid-template-columns:1fr;padding:15px}
+    .uptime{text-align:left}
+    .grid{gap:12px}
+    .card{box-shadow:3px 4px 0 var(--line)}
+    .kpi-card{min-height:145px}
+    .kpi-val{font-size:22px}
+}
+@media(max-width:390px){
+    .grid{gap:9px}
+    .kpi-card{padding:11px;min-height:138px}
+    .kpi-val{font-size:20px}
+    .kpi-icon{width:25px;height:25px}
+    .kpi-sub{font-size:9px}
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+
+    <header class="header">
+        <div class="brand">
+            <div class="eyebrow"><span class="live-dot"></span> Live System Monitor</div>
+            <h1>Overview</h1>
+            <div class="device-name" id="device-name">Loading...</div>
+        </div>
+        <div class="controls">
+            <button class="btn" onclick="updateData()" title="Refresh"><i class="fa-solid fa-rotate-right"></i></button>
+        </div>
+    </header>
+
+    <section class="device-card">
+        <div>
+            <div class="kpi-label">Device</div>
+            <div id="device-model" style="font-size:20px;font-weight:800;margin-top:6px;letter-spacing:-.03em">—</div>
+            <div class="device-meta">
+                <span class="chip"><i class="fa-solid fa-mobile-screen"></i><span id="chip-device">—</span></span>
+                <span class="chip"><i class="fa-brands fa-android"></i><span id="chip-os">—</span></span>
+                <span class="chip"><i class="fa-solid fa-microchip"></i><span id="chip-cpu">—</span></span>
+            </div>
+        </div>
+        <div class="uptime">
+            <div class="uptime-label">Uptime</div>
+            <div class="uptime-value" id="uptime-val">—</div>
+        </div>
+    </section>
+
+    <section class="grid">
+        <!-- MEMORY -->
+        <div class="card kpi-card">
+            <div>
+                <div class="kpi-top">
+                    <div class="kpi-label">Memory</div>
+                    <div class="kpi-icon"><i class="fa-solid fa-memory"></i></div>
+                </div>
+                <div class="kpi-val" id="mem-val">—</div>
+                <div class="kpi-sub" id="mem-sub">—</div>
+            </div>
+            <div class="progress"><i id="mem-bar" style="width:0%"></i></div>
+        </div>
+
+        <!-- BATTERY -->
+        <div class="card kpi-card">
+            <div>
+                <div class="kpi-top">
+                    <div class="kpi-label">Battery</div>
+                    <div class="kpi-icon"><i class="fa-solid fa-battery-half"></i></div>
+                </div>
+                <div class="kpi-val" id="bat-val">—</div>
+                <div class="kpi-sub" id="bat-sub">—</div>
+            </div>
+            <div class="progress battery-progress"><i id="bat-bar" style="width:0%"></i></div>
+        </div>
+
+        <!-- CPU -->
+        <div class="card kpi-card">
+            <div>
+                <div class="kpi-top">
+                    <div class="kpi-label">CPU Usage</div>
+                    <div class="kpi-icon"><i class="fa-solid fa-microchip"></i></div>
+                </div>
+                <div class="kpi-val" id="cpu-val">—</div>
+                <div class="kpi-sub" id="cpu-sub">—</div>
+            </div>
+            <div class="chart-box" id="cpu-chart">
+                <div class="chart-bar" style="height:4%"></div>
+                <div class="chart-bar" style="height:4%"></div>
+                <div class="chart-bar" style="height:4%"></div>
+                <div class="chart-bar" style="height:4%"></div>
+                <div class="chart-bar" style="height:4%"></div>
+            </div>
+        </div>
+
+        <!-- GPU -->
+        <div class="card kpi-card">
+            <div>
+                <div class="kpi-top">
+                    <div class="kpi-label">GPU</div>
+                    <div class="kpi-icon"><i class="fa-solid fa-display"></i></div>
+                </div>
+                <div class="kpi-val" id="gpu-model" style="font-size:17px">—</div>
+                <div class="kpi-sub" id="gpu-gl">—</div>
+            </div>
+            <div class="chart-box">
+                <div class="chart-bar" style="height:32%"></div>
+                <div class="chart-bar" style="height:54%"></div>
+                <div class="chart-bar" style="height:25%"></div>
+                <div class="chart-bar" style="height:68%"></div>
+                <div class="chart-bar" style="height:46%"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container">
+        <!-- NETWORK -->
+        <div class="card section-card">
+            <div class="section-head">
+                <div class="section-title"><i class="fa-solid fa-network-wired"></i> Network</div>
+                <div class="section-caption">LIVE INTERFACES</div>
+            </div>
+            <table class="info-table">
+                <thead>
+                    <tr>
+                        <th style="text-align:left">Interface</th>
+                        <th class="text-right">Upload</th>
+                        <th class="text-right">Download</th>
+                    </tr>
+                </thead>
+                <tbody id="net-body">
+                    <tr><td colspan="3" style="color:var(--muted);font-size:10px;padding:12px 0">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SYSTEM INFO -->
+        <div class="card section-card">
+            <div class="section-head">
+                <div class="section-title"><i class="fa-solid fa-circle-info"></i> System Info</div>
+                <div class="section-caption">DEVICE STATUS</div>
+            </div>
+            <div class="system-list">
+                <div class="system-row">
+                    <div class="system-key">OS</div>
+                    <div class="system-value accent" id="sys-os">—</div>
+                </div>
+                <div class="system-row">
+                    <div class="system-key">Kernel</div>
+                    <div class="system-value" id="sys-kernel">—</div>
+                </div>
+                <div class="system-row">
+                    <div class="system-key">Uptime</div>
+                    <div class="system-value green" id="sys-uptime">—</div>
+                </div>
+                <div class="system-row">
+                    <div class="system-key">CPU Temp</div>
+                    <div class="system-value" id="sys-temp">—</div>
+                </div>
+                <div class="system-row">
+                    <div class="system-key">Root</div>
+                    <div class="system-value red" id="sys-root">—</div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+// Fetch dari Go API /api/sysinfo
+function updateData(){
+    fetch('/api/sysinfo?_=' + Date.now())
+    .then(r => r.json())
+    .then(d => {
+        // --- Device Card ---
+        const deviceEl = document.getElementById('device-model');
+        const deviceNameEl = document.getElementById('device-name');
+        const chipDeviceEl = document.getElementById('chip-device');
+        const chipOsEl = document.getElementById('chip-os');
+        const chipCpuEl = document.getElementById('chip-cpu');
+        const uptimeValEl = document.getElementById('uptime-val');
+
+        if(deviceEl) deviceEl.textContent = d.sys?.device || '—';
+        if(deviceNameEl) deviceNameEl.textContent = d.sys?.device || 'Unknown Device';
+        if(chipDeviceEl) chipDeviceEl.textContent = d.sys?.device || '—';
+        if(chipOsEl) chipOsEl.textContent = d.sys?.os || '—';
+        if(chipCpuEl) chipCpuEl.textContent = d.cpu?.model || '—';
+        if(uptimeValEl) uptimeValEl.textContent = d.sys?.uptime || '—';
+
+        // --- Memory ---
+        const memVal = document.getElementById('mem-val');
+        const memSub = document.getElementById('mem-sub');
+        const memBar = document.getElementById('mem-bar');
+        if(memVal) memVal.textContent = d.ram?.used || '—';
+        if(memSub) memSub.textContent = '/ ' + (d.ram?.total || '—') + ' · Swap ' + (d.ram?.swap_raw ?? 0) + '%';
+        if(memBar) memBar.style.width = (d.ram?.raw_lvl ?? 0) + '%';
+
+        // --- Battery ---
+        const batVal = document.getElementById('bat-val');
+        const batSub = document.getElementById('bat-sub');
+        const batBar = document.getElementById('bat-bar');
+        if(batVal) batVal.textContent = (d.bat?.raw_lvl ?? '—') + '%';
+        if(batSub) batSub.textContent = (d.bat?.status || 'Unknown') + ' · ' + (d.bat?.temp ?? '?') + '°C';
+        if(batBar) batBar.style.width = (d.bat?.raw_lvl ?? 0) + '%';
+
+        // --- CPU ---
+        const cpuVal = document.getElementById('cpu-val');
+        const cpuSub = document.getElementById('cpu-sub');
+        const chart = document.getElementById('cpu-chart');
+        let cpuUsage = '—';
+        if (typeof d.cpu?.usage === 'number') {
+            cpuUsage = d.cpu.usage.toFixed(1);
+        } else if (d.cpu?.usage != null) {
+            cpuUsage = d.cpu.usage;
+        }
+        if(cpuVal) cpuVal.textContent = cpuUsage + '%';
+        if(cpuSub) cpuSub.textContent = (d.cpu?.cores ?? '?') + ' cores · ' + (d.cpu?.freq || 'Dynamic');
+        if(chart && Array.isArray(d.cpu?.history)){
+            chart.innerHTML = '';
+            d.cpu.history.forEach(h => {
+                const bar = document.createElement('div');
+                bar.className = 'chart-bar';
+                bar.style.height = Math.max(4, h) + '%';
+                chart.appendChild(bar);
+            });
+        }
+
+        // --- GPU ---
+        const gpuModel = document.getElementById('gpu-model');
+        const gpuGl = document.getElementById('gpu-gl');
+        if(gpuModel) gpuModel.textContent = d.gpu?.model || '—';
+        if(gpuGl) gpuGl.textContent = (d.gpu?.gl || 'OpenGL') + ' · ' + (d.gpu?.freq || 'Dynamic');
+
+        // --- Network ---
+        const netBody = document.getElementById('net-body');
+        if(netBody){
+            const list = d.net?.list || [];
+            if(list.length === 0){
+                netBody.innerHTML = '<tr><td colspan="3" style="color:var(--muted);font-size:10px;padding:12px 0">No active interface</td></tr>';
+            } else {
+                netBody.innerHTML = '';
+                list.forEach(n => {
+                    const icon = n.name.startsWith('wlan') ? 'fa-wifi' :
+                                 n.name.startsWith('rmnet') || n.name.startsWith('ccmni') ? 'fa-signal' : 'fa-ethernet';
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>
+                            <div class="iface">
+                                <div class="iface-icon"><i class="fa-solid ${icon}"></i></div>
+                                <div>
+                                    <div class="iface-name"></div>
+                                    <div class="ip"></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="text-right"></td>
+                        <td class="text-right"></td>`;
+                    tr.querySelector('.iface-name').textContent = n.name;
+                    tr.querySelector('.ip').textContent = 'IP: ' + (n.ip || '-');
+                    tr.children[1].textContent = n.tx_total || '—';
+                    tr.children[2].textContent = n.rx_total || '—';
+                    netBody.appendChild(tr);
+                });
+            }
+        }
+
+        // --- System Info Panel ---
+        const sysOs = document.getElementById('sys-os');
+        const sysKernel = document.getElementById('sys-kernel');
+        const sysUptime = document.getElementById('sys-uptime');
+        const sysTemp = document.getElementById('sys-temp');
+        const sysRoot = document.getElementById('sys-root');
+        if(sysOs) sysOs.textContent = d.sys?.os || '—';
+        if(sysKernel) sysKernel.textContent = d.sys?.kernel || '—';
+        if(sysUptime) sysUptime.textContent = d.sys?.uptime || '—';
+        if(sysTemp) sysTemp.textContent = (d.cpu?.temp ?? '—') + '°C';
+        if(sysRoot) sysRoot.textContent = d.sys?.root || '—';
+    })
+    .catch(err => {
+        console.warn('sysinfo fetch error:', err);
+    });
+}
+
+function syncTheme(){
+    try{
+        const parentHtml = window.parent?.document?.documentElement;
+        if(parentHtml) {
+            const theme = parentHtml.getAttribute('data-theme');
+            if(theme && theme !== 'dark') {
+                document.documentElement.setAttribute('data-theme', theme);
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+            }
+            const color = parentHtml.getAttribute('data-color');
+            if(color && color !== 'default') {
+                document.documentElement.setAttribute('data-color', color);
+            } else {
+                document.documentElement.removeAttribute('data-color');
+            }
+        }
+    }catch(e){}
+}
+
+syncTheme();
+updateData(); // Langsung load pas buka
+setInterval(syncTheme, 1000);
+setInterval(updateData, 3000);
+</script>
+</body>
+</html>

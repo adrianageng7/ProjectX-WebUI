@@ -1,0 +1,2234 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Kelola & Tambah Akun Clash — ProjectX</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <style>
+        :root {
+            /* Neobrutalist ProjectX Dark Mode */
+            --bg: #18151e;
+            --paper: #24202b;
+            --ink: #fffaf4;
+            --muted: #aaa2ad;
+            --line: #0d0b10;
+            --shadow: 4px 5px 0 #08070a;
+            --panel-alt: #302b38;
+
+            /* Accent Colors */
+            --pink: #ff5ca8;
+            --yellow: #ffe14a;
+            --cyan: #55dfff;
+            --lime: #b8f34a;
+            --purple: #9b7cff;
+            --orange: #ff9955;
+
+            --border-width: 2px;
+            --border-color: var(--line);
+            --bg-body: transparent;
+            --panel-bg: var(--paper);
+            --panel-bg-alt: var(--panel-alt);
+            --text: var(--ink);
+            --text-muted: var(--muted);
+            
+            --primary: var(--yellow);
+            --primary-text: #000000;
+            --secondary: var(--pink);
+            --accent: var(--cyan);
+            
+            --brutal-shadow: var(--shadow);
+            --brutal-shadow-sm: 2px 2px 0px var(--line);
+            --font: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            --mono: 'JetBrains Mono', monospace;
+        }
+
+        :root[data-theme="light"] {
+            --bg: #fff6e8;
+            --paper: #fffdf8;
+            --ink: #17151a;
+            --muted: #77717a;
+            --line: #17151a;
+            --shadow: 4px 5px 0 #17151a;
+            --panel-alt: #e8e5da;
+            --border-color: #17151a;
+            --panel-bg: #ffffff;
+            --panel-bg-alt: #f0ede4;
+            --text: #17151a;
+            --text-muted: #77717a;
+            
+            --primary: #ffe14a;
+            --primary-text: #000000;
+            --secondary: #ff5ca8;
+            --accent: #0088cc;
+            
+            --brutal-shadow: 4px 4px 0px rgba(0,0,0,0.2);
+            --brutal-shadow-sm: 2px 2px 0px rgba(0,0,0,0.2);
+        }
+
+        * { box-sizing: border-box; outline: none; }
+        body {
+            margin: 0;
+            background: var(--bg-body);
+            color: var(--text);
+            font-family: var(--font);
+            padding: 16px;
+            padding-bottom: 90px;
+        }
+
+        .wrap { max-width: 900px; margin: 0 auto; }
+
+        /* HEADER */
+        .page-header {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .eyebrow {
+            font-size: 11px;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 4px;
+        }
+        h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+            color: var(--text);
+        }
+        .subtitle {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            font-weight: 600;
+        }
+
+        /* TARGET BAR */
+        .target-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--panel-bg);
+            border: var(--border-width) solid var(--border-color);
+            border-radius: 12px;
+            padding: 10px 14px;
+            box-shadow: var(--brutal-shadow-sm);
+            flex-wrap: wrap;
+        }
+        .target-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1;
+            min-width: 260px;
+        }
+        .target-label-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .target-label-row label {
+            font-size: 12px;
+            font-weight: 800;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .target-badge-pill {
+            font-size: 10px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .pill-success {
+            background: rgba(184, 243, 74, 0.25);
+            color: var(--lime);
+            border-color: var(--lime);
+        }
+        .pill-warning {
+            background: rgba(255, 225, 74, 0.2);
+            color: var(--yellow);
+            border-color: var(--yellow);
+        }
+        .pill-info {
+            background: rgba(85, 223, 255, 0.2);
+            color: var(--cyan);
+            border-color: var(--cyan);
+        }
+        .target-warning-hint {
+            font-size: 11px;
+            color: var(--yellow);
+            background: rgba(255, 225, 74, 0.1);
+            border: 1px dashed var(--yellow);
+            border-radius: 6px;
+            padding: 6px 10px;
+            margin-top: 4px;
+            line-height: 1.4;
+        }
+        /* TEMPLATE MODE CARDS */
+        .template-mode-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .mode-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 14px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--panel-bg-alt);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .mode-card:hover {
+            border-color: var(--primary);
+        }
+        .mode-card.active {
+            border-color: var(--primary);
+            background: rgba(212, 255, 0, 0.08);
+            box-shadow: 2px 2px 0 var(--primary);
+        }
+        .mode-radio input[type="radio"] {
+            margin-top: 3px;
+            accent-color: var(--primary);
+            width: 17px;
+            height: 17px;
+            cursor: pointer;
+        }
+        .mode-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .mode-title-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .mode-title {
+            font-size: 13px;
+            font-weight: 900;
+            color: var(--text);
+        }
+        .mode-badge-rec {
+            font-size: 9px;
+            font-weight: 900;
+            background: var(--primary);
+            color: var(--primary-text);
+            padding: 2px 6px;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+        }
+        .mode-desc {
+            font-size: 11.5px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+        .target-guidance-box {
+            background: rgba(85, 223, 255, 0.1);
+            border: 1.5px solid var(--cyan);
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 11.5px;
+            margin: 6px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .tgb-title {
+            font-weight: 900;
+            color: var(--cyan);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .tgb-desc {
+            color: var(--text);
+            line-height: 1.4;
+        }
+        .select-wrap { flex: 1; }
+        select, input[type="text"], input[type="number"], .paste-textarea, .raw-textarea {
+            width: 100%;
+            background: var(--panel-bg-alt);
+            color: var(--text);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-family: var(--font);
+            font-size: 13px;
+            font-weight: 700;
+        }
+        .mono { font-family: var(--mono); }
+        .target-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* TEMPLATE ALERT BANNER */
+        .template-alert-banner {
+            background: linear-gradient(135deg, rgba(255, 225, 74, 0.15), rgba(85, 223, 255, 0.12));
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: 3px 3px 0 var(--border-color);
+        }
+
+        .tab-icon-wrap {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: var(--primary);
+            color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .tab-text-wrap {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .tab-heading {
+            font-size: 13px;
+            font-weight: 900;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tab-description {
+            font-size: 11.5px;
+            color: var(--text);
+            line-height: 1.4;
+        }
+
+        .tab-description code {
+            background: rgba(0,0,0,0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: var(--mono);
+            color: var(--yellow);
+        }
+
+        .btn-template-yellow {
+            background: var(--yellow);
+            color: #000;
+            border: 2px solid #000;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            box-shadow: 2px 2px 0 #000;
+            white-space: nowrap;
+            transition: transform 0.1s;
+        }
+
+        .btn-template-yellow:hover {
+            transform: translate(-1px, -1px);
+            box-shadow: 3px 3px 0 #000;
+        }
+
+        /* MAIN TABS */
+        .main-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 18px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 8px;
+        }
+        .main-tab {
+            background: var(--panel-bg);
+            color: var(--text);
+            border: var(--border-width) solid var(--border-color);
+            border-radius: 10px;
+            padding: 10px 18px;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 2px 2px 0 var(--border-color);
+            transition: transform 0.1s;
+        }
+        .main-tab:hover { transform: translate(-1px, -1px); box-shadow: 3px 3px 0 var(--border-color); }
+        .main-tab.active {
+            background: var(--primary);
+            color: var(--primary-text);
+            box-shadow: 3px 3px 0 var(--border-color);
+        }
+        .tab-badge {
+            background: rgba(0,0,0,0.15);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 900;
+        }
+        .tab-badge-new {
+            background: var(--pink);
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-size: 9px;
+            font-weight: 900;
+        }
+
+        /* PASTE BOX */
+        .paste-box {
+            background: var(--panel-bg);
+            border: var(--border-width) solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px 16px;
+            box-shadow: var(--brutal-shadow-sm);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+        .paste-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .paste-title {
+            font-size: 13px;
+            font-weight: 900;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-paste-clip {
+            background: var(--panel-bg-alt);
+            border: 1.5px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--primary);
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-paste-clip:hover { background: var(--primary); color: var(--primary-text); }
+        .paste-textarea { resize: vertical; min-height: 70px; }
+
+        /* CHIPS */
+        .chip-bar {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            padding-top: 6px;
+            border-top: 1px dashed var(--border-color);
+        }
+        .chip-label { font-size: 11px; font-weight: 800; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+        .chips-scroll { display: flex; gap: 6px; overflow-x: auto; flex: 1; }
+        .chip-btn {
+            background: var(--panel-bg-alt);
+            border: 1.5px solid var(--border-color);
+            border-radius: 20px;
+            padding: 4px 10px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+        .chip-btn.active { background: var(--yellow); color: #000; font-weight: 900; }
+        .chip-name { max-width: 140px; overflow: hidden; text-overflow: ellipsis; }
+
+        /* EDITOR MODAL STYLE CARD (PERSIS SCREENSHOT) */
+        .editor-modal-style-card {
+            background: #1e1b24;
+            border: 2px solid #000000;
+            border-radius: 14px;
+            box-shadow: 4px 5px 0 #000000;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+        :root[data-theme="light"] .editor-modal-style-card {
+            background: #ffffff;
+            border-color: #17151a;
+            box-shadow: 4px 5px 0 rgba(0,0,0,0.15);
+        }
+        .em-header {
+            padding: 14px 18px;
+            background: #18151e;
+            border-bottom: 2px solid #000000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        :root[data-theme="light"] .em-header { background: #f5f2e9; }
+        .em-title {
+            font-size: 15px;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ffffff;
+        }
+        :root[data-theme="light"] .em-title { color: #17151a; }
+        .em-reset {
+            background: transparent;
+            border: none;
+            color: var(--pink);
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* TABS VOLT YELLOW PERSIS SCREENSHOT */
+        .em-tabs {
+            display: flex;
+            background: #18151e;
+            border-bottom: 2px solid #000000;
+        }
+        :root[data-theme="light"] .em-tabs { background: #e8e5da; }
+        .em-tab {
+            flex: 1;
+            padding: 12px 16px;
+            background: transparent;
+            border: none;
+            font-weight: 900;
+            font-size: 13px;
+            color: #8f8899;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.15s;
+        }
+        .em-tab.active {
+            background: #ffe14a; /* Volt Yellow persis screenshot */
+            color: #000000;
+        }
+
+        .em-body { padding: 20px; background: #1e1b24; }
+        :root[data-theme="light"] .em-body { background: #ffffff; }
+
+        /* FORM GRID & LABELS */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        @media (max-width: 640px) {
+            .wrap { padding: 10px 10px 85px 10px; }
+            .page-header { gap: 10px; margin-bottom: 12px; }
+            .page-header h1 { font-size: 20px; }
+            .subtitle { font-size: 11px; margin-top: 2px; }
+            .target-bar { padding: 8px 10px; gap: 8px; }
+            .target-field { min-width: 100%; }
+            .target-field label { font-size: 11px; }
+            .target-actions { width: 100%; justify-content: space-between; }
+            .target-actions .btn-outline { flex: 1; justify-content: center; }
+            .template-alert-banner { flex-direction: column; align-items: flex-start; padding: 12px; gap: 10px; margin-bottom: 14px; }
+            .tab-action-wrap { width: 100%; }
+            .btn-template-yellow { width: 100%; justify-content: center; }
+            .main-tabs { margin-bottom: 12px; padding-bottom: 6px; gap: 6px; }
+            .main-tab { padding: 8px 12px; font-size: 12px; flex: 1; justify-content: center; }
+            .paste-box { padding: 10px 12px; gap: 8px; margin-bottom: 12px; }
+            .paste-textarea { min-height: 50px; padding: 7px 10px; font-size: 12px; }
+            .editor-modal-style-card { border-radius: 10px; margin-bottom: 16px; }
+            .em-header { padding: 10px 12px; }
+            .em-title { font-size: 13px; gap: 6px; }
+            .em-tabs .em-tab { padding: 8px 10px; font-size: 12px; }
+            .em-body { padding: 12px; }
+            .form-grid { grid-template-columns: 1fr 1fr; gap: 8px 10px; }
+            .form-group { gap: 3px; }
+            .form-group label { font-size: 9.5px; letter-spacing: 0.3px; }
+            select, input[type="text"], input[type="number"], .raw-textarea { padding: 6px 10px; font-size: 12px; border-radius: 6px; height: 36px; }
+            .toggle-list { flex-direction: row; flex-wrap: wrap; gap: 6px 14px; margin-top: 4px; padding: 6px 8px; background: rgba(0,0,0,0.15); border-radius: 6px; }
+            .toggle-box { font-size: 10.5px; gap: 6px; }
+            .toggle-box input[type="checkbox"] { width: 17px; height: 17px; }
+            .em-footer { padding: 10px 12px; gap: 8px; }
+            .btn-dark { padding: 8px 12px; font-size: 12px; }
+            .btn-save-yellow { padding: 8px 14px; font-size: 12px; flex: 1; justify-content: center; }
+            .account-grid { grid-template-columns: 1fr; gap: 10px; }
+            .account-card { padding: 10px 12px; gap: 8px; }
+            .acc-name { font-size: 14px; }
+            .acc-details { padding: 8px; gap: 4px; font-size: 11px; }
+        }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group.full-width { grid-column: 1 / -1; }
+        .form-group label {
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: #8f8899;
+            letter-spacing: 0.5px;
+        }
+
+        /* TOGGLE BOXES PERSIS SCREENSHOT */
+        .toggle-list {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 10px 20px;
+            margin-top: 8px;
+            align-items: center;
+        }
+        .toggle-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            color: #ffffff;
+        }
+        :root[data-theme="light"] .toggle-box { color: #17151a; }
+        .toggle-box input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #ffe14a;
+            cursor: pointer;
+        }
+
+        /* FOOTER PERSIS SCREENSHOT */
+        .em-footer {
+            padding: 14px 20px;
+            background: #18151e;
+            border-top: 2px solid #000000;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 12px;
+        }
+        :root[data-theme="light"] .em-footer { background: #f5f2e9; }
+        .btn-dark {
+            background: #2b2734;
+            color: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 8px;
+            padding: 10px 18px;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 2px 2px 0 #000000;
+        }
+        .btn-save-yellow {
+            background: #ffe14a;
+            color: #000000;
+            border: 2px solid #000000;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 13px;
+            font-weight: 900;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 3px 3px 0 #000000;
+        }
+        .btn-save-yellow:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 #000000; }
+
+        /* PROTOCOL TAGS */
+        .proto-tag {
+            font-size: 9px;
+            font-weight: 900;
+            text-transform: uppercase;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid #000;
+            box-shadow: 1px 1px 0 #000;
+        }
+        .proto-vless { background: var(--cyan); color: #000; }
+        .proto-vmess { background: var(--pink); color: #fff; }
+        .proto-trojan { background: var(--orange); color: #000; }
+        .proto-ss { background: var(--lime); color: #000; }
+
+        /* KELOLA AKUN CARDS */
+        .filter-bar { display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px; }
+        .search-input-wrap { position: relative; display: flex; align-items: center; }
+        .search-input-wrap i.fa-magnifying-glass { position: absolute; left: 14px; color: var(--text-muted); }
+        .search-input-wrap input { padding-left: 38px; padding-right: 36px; height: 42px; }
+        .clear-search { position: absolute; right: 10px; background: transparent; border: none; color: var(--text-muted); cursor: pointer; display: none; }
+        .protocol-pills { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
+        .pill { background: var(--panel-bg); color: var(--text); border: 1.5px solid var(--border-color); border-radius: 20px; padding: 5px 12px; font-size: 11px; font-weight: 800; cursor: pointer; white-space: nowrap; }
+        .pill.active { background: var(--accent); color: #000; box-shadow: 2px 2px 0 var(--border-color); }
+
+        .account-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+        .account-card { background: var(--panel-bg); border: var(--border-width) solid var(--border-color); border-radius: 12px; padding: 14px; box-shadow: var(--brutal-shadow-sm); display: flex; flex-direction: column; gap: 12px; }
+        .acc-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+        .acc-title-wrap { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+        .acc-name { margin: 0; font-size: 15px; font-weight: 800; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .acc-actions { display: flex; gap: 4px; flex-shrink: 0; }
+        .action-btn { background: var(--panel-bg-alt); border: 1.5px solid var(--border-color); border-radius: 6px; color: var(--text); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 13px; }
+        .action-btn.edit:hover { background: var(--yellow); color: #000; }
+        .action-btn.share:hover { background: var(--cyan); color: #000; }
+        .action-btn.copy:hover { background: var(--lime); color: #000; }
+        .action-btn.delete:hover { background: var(--pink); color: #fff; }
+
+        .acc-details { display: flex; flex-direction: column; gap: 6px; background: var(--panel-bg-alt); border: 1.5px solid var(--border-color); border-radius: 8px; padding: 10px; font-size: 12px; }
+        .detail-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+        .detail-row.highlight { background: rgba(255, 225, 74, 0.12); padding: 2px 6px; border-radius: 4px; }
+        .detail-label { color: var(--text-muted); font-weight: 700; font-size: 11px; display: flex; align-items: center; gap: 6px; }
+        .detail-val { font-weight: 800; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 190px; }
+        .badges-row { display: flex; gap: 6px; margin-top: 4px; flex-wrap: wrap; }
+        .tag-status { font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border-color); }
+        .tls-on { background: rgba(184, 243, 74, 0.25); color: var(--lime); }
+        .tls-off { background: rgba(255, 92, 168, 0.15); color: var(--pink); }
+
+        .empty-state, .loading-state { text-align: center; padding: 48px 16px; background: var(--panel-bg); border: var(--border-width) dashed var(--border-color); border-radius: 12px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+
+        /* MODAL */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(4px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 16px; }
+        .modal-overlay.active { display: flex; }
+        .modal-card { background: #1e1b24; border: 2px solid #000; border-radius: 14px; width: 100%; max-width: 620px; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 6px 6px 0 #000; overflow: hidden; }
+        .modal-card.modal-sm { max-width: 420px; }
+        .modal-header { padding: 14px 18px; background: #18151e; border-bottom: 2px solid #000; display: flex; justify-content: space-between; align-items: center; }
+        .modal-header-danger { background: var(--pink); color: #fff; }
+        .m-title { font-size: 15px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
+        .modal-close { background: transparent; border: none; color: var(--text); cursor: pointer; font-size: 16px; }
+        .modal-body { padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+        .modal-footer { padding: 14px 20px; background: #18151e; border-top: 2px solid #000; display: flex; justify-content: flex-end; gap: 10px; }
+        .del-preview { background: var(--panel-bg-alt); border: 1.5px solid var(--border-color); border-radius: 8px; padding: 10px 12px; margin: 6px 0; }
+        .warn-text { font-size: 11px; color: var(--pink); font-weight: 700; margin: 0; }
+
+        /* BUTTONS */
+        .btn { background: var(--panel-bg-alt); color: var(--text); border: var(--border-width) solid var(--border-color); border-radius: 8px; padding: 8px 14px; font-size: 12px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 2px 2px 0 var(--border-color); }
+        .btn-primary { background: var(--primary); color: var(--primary-text); }
+        .btn-danger { background: var(--pink); color: #fff; }
+        .btn-outline { background: var(--panel-bg); }
+        .btn-icon { width: 38px; height: 38px; padding: 0; display: flex; align-items: center; justify-content: center; }
+        .btn-sm { padding: 4px 10px; font-size: 11px; }
+
+        /* TOAST */
+        .brutal-toast { position: fixed; bottom: 24px; right: 24px; background: var(--panel-bg); border: var(--border-width) solid var(--border-color); border-radius: 10px; padding: 12px 16px; box-shadow: 4px 4px 0 var(--border-color); z-index: 2000; display: none; flex-direction: column; gap: 4px; max-width: 320px; }
+        .brutal-toast.active { display: flex; }
+        .toast-title { font-size: 13px; font-weight: 900; color: var(--primary); display: flex; align-items: center; gap: 6px; }
+        .toast-desc { font-size: 11px; font-weight: 700; color: var(--text); }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <!-- HEADER UTAMA -->
+    <div class="page-header">
+        <div class="header-info">
+            <div class="eyebrow">
+                <i class="fa-solid fa-server" style="color:var(--accent);"></i> Manajemen Proksi Clash & Mihomo
+            </div>
+            <h1>Kelola & Tambah Akun</h1>
+            <div class="subtitle">
+                Tempel link VLESS, VMess, atau Trojan untuk langsung mengedit dan menyimpannya ke file konfigurasi.
+            </div>
+        </div>
+
+        <!-- TARGET BAR -->
+        <div class="target-bar">
+            <div class="target-field">
+                <div class="target-label-row">
+                    <label for="targetSelect"><i class="fa-solid fa-file-code"></i> File Target Penyimpanan:</label>
+                    <span id="targetBadgePill" class="target-badge-pill" style="display: none;"></span>
+                </div>
+                <div class="select-wrap">
+                    <select id="targetSelect" onchange="onTargetSelectChange()">
+                        <option value="">Memindai file konfigurasi...</option>
+                    </select>
+                </div>
+                <div id="targetWarningHint" class="target-warning-hint" style="display: none;">
+                    💡 <strong>Petunjuk Pisah Trafik:</strong> Pilih <code>Provider: my_proxies.yaml</code> di atas agar akun ini otomatis masuk ke grup Game, Streaming, & Proxy Utama!
+                </div>
+            </div>
+            <div class="target-actions">
+                <button class="btn btn-outline" onclick="openTemplateModal()" title="Pasang/Reset Template Pisah Trafik BFR">
+                    <i class="fa-solid fa-wand-magic-sparkles" style="color:var(--accent);"></i> Template BFR
+                </button>
+                <button class="btn btn-outline" onclick="openCreateProviderModal()" title="Buat File Provider YAML Baru">
+                    <i class="fa-solid fa-plus"></i> Buat Provider
+                </button>
+                <button class="btn btn-icon" onclick="loadTargets(true)" title="Segarkan Data">
+                    <i class="fa-solid fa-rotate-right" id="refreshIcon"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- BANNER REKOMENDASI TEMPLATE JIKA CONFIG MASIH KOSONG -->
+    <div class="template-alert-banner" id="templateAlertBanner" style="display: none;">
+        <div class="tab-icon-wrap">
+            <i class="fa-solid fa-bolt-lightning"></i>
+        </div>
+        <div class="tab-text-wrap">
+            <div class="tab-heading">CONFIG BFR MASIH KOSONG / BELUM PISAH TRAFIK</div>
+            <div class="tab-description">
+                File <code>config.yaml</code> bawaan BFR belum memiliki aturan routing pisah trafik & DNS Android. Pasang template siap pakai sekarang agar internet langsung berjalan otomatis!
+            </div>
+        </div>
+        <div class="tab-action-wrap">
+            <button class="btn btn-template-yellow" onclick="openTemplateModal()" id="btnBannerApplyTemplate">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Pilih & Pasang Template BFR
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN TABS -->
+    <div class="main-tabs">
+        <button class="main-tab active" id="tabBtnAdd" onclick="switchMainTab('add')">
+            <i class="fa-solid fa-circle-plus"></i>
+            <span>Tambah Akun Baru</span>
+            <span class="tab-badge-new">UTAMA</span>
+        </button>
+        <button class="main-tab" id="tabBtnManage" onclick="switchMainTab('manage')">
+            <i class="fa-solid fa-list-check"></i>
+            <span>Kelola Akun Tersimpan</span>
+            <span class="tab-badge" id="totalBadge">0</span>
+        </button>
+    </div>
+
+    <!-- TAB: TAMBAH AKUN BARU (DENGAN FORM PERSIS SCREENSHOT) -->
+    <div id="contentAdd">
+        <!-- PASTE BOX -->
+        <div class="paste-box">
+            <div class="paste-header">
+                <span class="paste-title">
+                    <i class="fa-solid fa-link" style="color:var(--yellow);"></i>
+                    Tempel Link VPN (VLESS / VMess / Trojan / SS)
+                </span>
+                <button class="btn-paste-clip" onclick="pasteFromClipboard()">
+                    <i class="fa-solid fa-clipboard"></i> Tempel dari Clipboard
+                </button>
+            </div>
+            <textarea
+                class="paste-textarea"
+                id="rawLinksInput"
+                placeholder="Tempel link VPN di sini... Formulir di bawah akan otomatis terisi dan siap diedit!&#10;Contoh: vless://990a72d4-f590-4799-b69d-c65c5383acb0@ikd.web.id:443?path=%2Flatest-discover-to-internet-of-t&security=tls&type=ws&sni=ikd.web.id#Biznet-SG"
+                rows="3"
+                oninput="onRawLinksInput(this.value)"
+            ></textarea>
+            <div class="chip-bar" id="chipBar">
+                <span class="chip-label"><i class="fa-solid fa-layer-group"></i> <span id="chipCount">0</span> Akun Terdeteksi:</span>
+                <div class="chips-scroll" id="chipsScroll"></div>
+                <button class="btn btn-primary btn-sm" onclick="saveAllParsedAccounts()">
+                    <i class="fa-solid fa-floppy-disk"></i> Simpan Semua Sekaligus
+                </button>
+            </div>
+        </div>
+
+        <!-- FORM PERSIS SCREENSHOT USER -->
+        <div class="editor-modal-style-card">
+            <div class="em-header">
+                <div class="em-title">
+                    <i class="fa-solid fa-pen-to-square" style="color:var(--yellow);"></i>
+                    <span>Detail & Konfigurasi Akun</span>
+                    <span class="proto-tag proto-vless" id="formProtoBadge">VLESS</span>
+                </div>
+                <button class="em-reset" onclick="resetForm()" title="Bersihkan">
+                    <i class="fa-solid fa-rotate-left"></i> Reset Form
+                </button>
+            </div>
+
+            <!-- TABS PERSIS SCREENSHOT (FORMULIR MUDAH vs KODE YAML) -->
+            <div class="em-tabs">
+                <button class="em-tab active" id="fTabForm" onclick="switchFormTab('form')">
+                    <i class="fa-solid fa-sliders"></i>
+                    <span>Formulir Mudah</span>
+                </button>
+                <button class="em-tab" id="fTabRaw" onclick="switchFormTab('raw')">
+                    <i class="fa-solid fa-code"></i>
+                    <span>Kode YAML</span>
+                </button>
+            </div>
+
+            <div class="em-body">
+                <!-- FORMULIR MUDAH -->
+                <div id="wrapFormView" class="form-grid">
+                    <div class="form-group full-width">
+                        <label>NAMA AKUN TAMPILAN</label>
+                        <input type="text" id="fName" oninput="onFormInput()">
+                    </div>
+
+                    <div class="form-group">
+                        <label>PROTOKOL</label>
+                        <select id="fType" onchange="onFormTypeChange()">
+                            <option value="vless">VLESS</option>
+                            <option value="vmess">VMess</option>
+                            <option value="trojan">Trojan</option>
+                            <option value="ss">Shadowsocks</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>PORT</label>
+                        <input type="number" id="fPort" value="443" oninput="onFormInput()">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>SERVER HOST / IP</label>
+                        <input type="text" id="fServer" oninput="onFormInput()">
+                    </div>
+
+                    <div class="form-group full-width" id="wrapFUUID">
+                        <label>UUID</label>
+                        <input type="text" id="fUUID" oninput="onFormInput()">
+                    </div>
+
+                    <div class="form-group full-width" id="wrapFPass" style="display: none;">
+                        <label>PASSWORD / KATA SANDI</label>
+                        <input type="text" id="fPass" oninput="onFormInput()">
+                    </div>
+
+                    <div class="form-group">
+                        <label>TIPE JARINGAN</label>
+                        <select id="fNet" onchange="onFormNetChange()">
+                            <option value="ws">WebSocket (WS)</option>
+                            <option value="grpc">gRPC</option>
+                            <option value="tcp">TCP</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>BUG SNI (SERVERNAME)</label>
+                        <input type="text" id="fSni" placeholder="zoom.us atau bug host" oninput="onFormInput()">
+                    </div>
+
+                    <div class="form-group" id="wrapFWsPath">
+                        <label>WEBSOCKET PATH</label>
+                        <input type="text" id="fWsPath" value="/" oninput="onFormInput()">
+                    </div>
+
+                    <div class="form-group" id="wrapFWsHost">
+                        <label>WEBSOCKET HOST HEADER</label>
+                        <input type="text" id="fWsHost" oninput="onFormInput()">
+                    </div>
+
+                    <div class="form-group full-width toggle-list">
+                        <label class="toggle-box">
+                            <input type="checkbox" id="fTLS" checked onchange="onFormInput()">
+                            <span>TLS AKTIF</span>
+                        </label>
+                        <label class="toggle-box">
+                            <input type="checkbox" id="fSkipCert" checked onchange="onFormInput()">
+                            <span>SKIP CERT VERIFY</span>
+                        </label>
+                        <label class="toggle-box">
+                            <input type="checkbox" id="fUDP" checked onchange="onFormInput()">
+                            <span>UDP</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- KODE YAML VIEW -->
+                <div id="wrapRawView" style="display: none;">
+                    <textarea class="raw-textarea mono" id="fRawYaml" rows="12" oninput="onRawYamlInput()"></textarea>
+                </div>
+            </div>
+
+            <div class="em-footer">
+                <button class="btn-dark" onclick="resetForm()">Batal</button>
+                <button class="btn-save-yellow" id="btnSaveCurrent" onclick="saveCurrentFormAccount()">
+                    <i class="fa-solid fa-floppy-disk"></i> Simpan Akun
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB: KELOLA AKUN -->
+    <div id="contentManage" style="display: none;">
+        <div class="filter-bar">
+            <div class="search-input-wrap">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="searchInput" placeholder="Cari nama akun, server, atau bug SNI..." oninput="onSearchInput(this.value)">
+                <button class="clear-search" id="clearSearchBtn" onclick="clearSearch()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="protocol-pills" id="pillsContainer">
+                <button class="pill active" onclick="setFilterType('all', this)">Semua (0)</button>
+            </div>
+        </div>
+
+        <div id="accountsContainer">
+            <div class="loading-state">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                <p>Memuat akun...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL EDIT AKUN (KELOLA AKUN) -->
+<div class="modal-overlay" id="editModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <div class="m-title">
+                <i class="fa-solid fa-pen-to-square" style="color:var(--yellow);"></i>
+                <span>Edit Akun Proxy</span>
+            </div>
+            <button class="modal-close" onclick="closeEditModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="em-tabs">
+            <button class="em-tab active" id="mTabForm" onclick="switchEditModalTab('form')">
+                <i class="fa-solid fa-sliders"></i>
+                <span>Formulir Mudah</span>
+            </button>
+            <button class="em-tab" id="mTabRaw" onclick="switchEditModalTab('raw')">
+                <i class="fa-solid fa-code"></i>
+                <span>Kode YAML</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div id="editFormWrap" class="form-grid">
+                <div class="form-group full-width">
+                    <label>NAMA AKUN TAMPILAN</label>
+                    <input type="text" id="editName">
+                </div>
+                <div class="form-group">
+                    <label>PROTOKOL</label>
+                    <select id="editType" onchange="onEditTypeChange()">
+                        <option value="vless">VLESS</option>
+                        <option value="vmess">VMess</option>
+                        <option value="trojan">Trojan</option>
+                        <option value="ss">Shadowsocks</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>PORT</label>
+                    <input type="number" id="editPort">
+                </div>
+                <div class="form-group full-width">
+                    <label>SERVER HOST / IP</label>
+                    <input type="text" id="editServer">
+                </div>
+                <div class="form-group full-width" id="wrapEditUUID">
+                    <label>UUID</label>
+                    <input type="text" id="editUUID">
+                </div>
+                <div class="form-group full-width" id="wrapEditPass" style="display: none;">
+                    <label>PASSWORD / KATA SANDI</label>
+                    <input type="text" id="editPassword">
+                </div>
+                <div class="form-group">
+                    <label>TIPE JARINGAN</label>
+                    <select id="editNetwork" onchange="onEditNetworkChange()">
+                        <option value="ws">WebSocket (WS)</option>
+                        <option value="grpc">gRPC</option>
+                        <option value="tcp">TCP</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>BUG SNI (SERVERNAME)</label>
+                    <input type="text" id="editServername">
+                </div>
+                <div class="form-group" id="wrapEditWsPath">
+                    <label>WEBSOCKET PATH</label>
+                    <input type="text" id="editWsPath">
+                </div>
+                <div class="form-group" id="wrapEditWsHost">
+                    <label>WEBSOCKET HOST HEADER</label>
+                    <input type="text" id="editWsHost">
+                </div>
+                <div class="form-group full-width toggle-list">
+                    <label class="toggle-box">
+                        <input type="checkbox" id="editTLS">
+                        <span>TLS AKTIF</span>
+                    </label>
+                    <label class="toggle-box">
+                        <input type="checkbox" id="editSkipCert">
+                        <span>SKIP CERT VERIFY</span>
+                    </label>
+                    <label class="toggle-box">
+                        <input type="checkbox" id="editUDP">
+                        <span>UDP</span>
+                    </label>
+                </div>
+            </div>
+            <div id="editRawWrap" style="display: none;">
+                <textarea class="raw-textarea mono" id="editRawTextarea" rows="12"></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-dark" onclick="closeEditModal()">Batal</button>
+            <button class="btn-save-yellow" onclick="submitEdit()">
+                <i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL HAPUS -->
+<div class="modal-overlay" id="deleteModal">
+    <div class="modal-card modal-sm">
+        <div class="modal-header modal-header-danger">
+            <div class="m-title">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>Hapus Akun Proxy</span>
+            </div>
+            <button class="modal-close" onclick="closeDeleteModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body">
+            <p>Apakah Anda yakin ingin menghapus akun berikut?</p>
+            <div class="del-preview">
+                <strong id="delAccName">Nama Akun</strong>
+                <div class="small mono" id="delAccSub">server:port (type)</div>
+            </div>
+            <p class="warn-text"><i class="fa-solid fa-info-circle"></i> Akun akan dihapus langsung dari berkas YAML target.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-dark" onclick="closeDeleteModal()">Batal</button>
+            <button class="btn btn-danger" onclick="confirmDelete()">
+                <i class="fa-solid fa-trash-can"></i> Ya, Hapus Akun
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL BUAT PROVIDER -->
+<div class="modal-overlay" id="createProviderModal">
+    <div class="modal-card modal-sm">
+        <div class="modal-header">
+            <div class="m-title">
+                <i class="fa-solid fa-file-circle-plus" style="color:var(--lime);"></i>
+                <span>Buat Provider Baru</span>
+            </div>
+            <button class="modal-close" onclick="closeCreateProviderModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group full-width">
+                <label>Nama File Provider (YAML)</label>
+                <input type="text" id="newProviderInput" placeholder="Contoh: vip_singapore atau akun_game" onkeydown="if(event.key==='Enter') createNewProvider()">
+                <div class="panel-hint" style="margin-top:6px; font-size:11px; color:var(--text-muted);">Otomatis disimpan di <code>proxy_provider/</code></div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-dark" onclick="closeCreateProviderModal()">Batal</button>
+            <button class="btn-save-yellow" onclick="createNewProvider()">
+                <i class="fa-solid fa-plus"></i> Buat Provider
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL KONFIRMASI PASANG TEMPLATE BFR -->
+<div class="modal-overlay" id="modalTemplate">
+    <div class="modal-card">
+        <div class="modal-header">
+            <div class="m-title">
+                <i class="fa-solid fa-wand-magic-sparkles" style="color:var(--primary);"></i>
+                <span>Pilih Template Konfigurasi BFR</span>
+            </div>
+            <button class="modal-close" onclick="closeTemplateModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body">
+            <p style="font-size:13px; line-height:1.5; margin:0; font-weight:700;">
+                Pilih model perutean trafik yang sesuai dengan kebutuhan Anda:
+            </p>
+
+            <!-- PILIHAN MODE -->
+            <div class="template-mode-cards">
+                <!-- MODE 1: PISAH TRAFIK -->
+                <label class="mode-card active" id="cardModeSplit" onclick="selectTemplateMode('split')">
+                    <div class="mode-radio">
+                        <input type="radio" name="tmplMode" id="radioModeSplit" value="split" checked>
+                    </div>
+                    <div class="mode-info">
+                        <div class="mode-title-row">
+                            <span class="mode-title">🔀 Mode Pisah Trafik (Multi-Routing)</span>
+                            <span class="mode-badge-rec">REKOMENDASI</span>
+                        </div>
+                        <div class="mode-desc">
+                            Memisahkan koneksi otomatis ke grup khusus: <strong>Game</strong> (ML, PUBG, FF, Steam), <strong>Sosmed & Streaming</strong> (YouTube, TikTok, Netflix, IG), <strong>Indo Direct</strong> (M-Banking, Marketplace), dan <strong>Blokir Iklan</strong>.
+                        </div>
+                    </div>
+                </label>
+
+                <!-- MODE 2: STANDAR / TANPA PISAH TRAFIK -->
+                <label class="mode-card" id="cardModeStandard" onclick="selectTemplateMode('standard')">
+                    <div class="mode-radio">
+                        <input type="radio" name="tmplMode" id="radioModeStandard" value="standard">
+                    </div>
+                    <div class="mode-info">
+                        <div class="mode-title-row">
+                            <span class="mode-title">🚀 Mode Standar (All-in-One Proxy)</span>
+                        </div>
+                        <div class="mode-desc">
+                            Seluruh trafik internet dialirkan langsung ke satu grup proxy utama (dengan auto-ping terendah & bypass LAN). Lebih sederhana dan ringan tanpa filter terpisah.
+                        </div>
+                    </div>
+                </label>
+            </div>
+
+            <!-- PETUNJUK TARGET FILE PENYIMPANAN -->
+            <div class="target-guidance-box">
+                <div class="tgb-title"><i class="fa-solid fa-lightbulb" style="color:var(--yellow);"></i> Panduan Target Akun:</div>
+                <div class="tgb-desc" id="templateTargetGuidance">
+                    Saat menambah akun, pastikan memilih <strong>Provider: my_proxies.yaml</strong> agar akun Anda otomatis terhubung ke seluruh grup pisah trafik (Game, Streaming, dll).
+                </div>
+            </div>
+
+            <div style="background:rgba(255, 225, 74, 0.12); border:1.5px solid var(--yellow); border-radius:8px; padding:8px 12px; font-size:11.5px; color:var(--text);">
+                <i class="fa-solid fa-shield-halved" style="color:var(--yellow); margin-right:4px;"></i>
+                File <code>config.yaml</code> lama akan otomatis dibackup ke <code>config.yaml.bak</code>.
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-dark" onclick="closeTemplateModal()">Batal</button>
+            <button class="btn-save-yellow" id="btnApplyTemplate" onclick="applyBFRTemplate()">
+                <i class="fa-solid fa-check"></i> Pasang Template Pisah Trafik
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL RESTART BFR -->
+<div class="modal-overlay" id="modalRestartBFR">
+    <div class="modal-card modal-sm">
+        <div class="modal-header">
+            <div class="m-title">
+                <i class="fa-solid fa-circle-check" style="color:var(--lime);"></i>
+                <span>Template Berhasil Dipasang!</span>
+            </div>
+            <button class="modal-close" onclick="closeRestartBFRModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body">
+            <p style="font-size:13px; line-height:1.5; margin:0;">
+                File <code>config.yaml</code> dan provider <code>my_proxies.yaml</code> telah aktif.
+            </p>
+            <p style="font-size:12px; color:var(--text-muted); margin:4px 0 0 0;">
+                Agar perubahan konfigurasi langsung dimuat oleh core Clash/Mihomo, restart layanan BFR sekarang.
+            </p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-dark" onclick="closeRestartBFRModal()">Nanti Saja</button>
+            <button class="btn-save-yellow" id="btnRestartBFR" onclick="restartBFRService()">
+                <i class="fa-solid fa-rotate-right"></i> Restart Layanan BFR
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="brutal-toast" id="brutalToast">
+    <div class="toast-title"><i class="fa-solid fa-bell"></i> <span id="toastTitle">Info</span></div>
+    <div class="toast-desc" id="toastDesc">Pesan notifikasi</div>
+</div>
+
+<script>
+    // State
+    let targetFiles = [];
+    let selectedTarget = '';
+    let accounts = [];
+    let totalAccounts = 0;
+    let accountsStats = {};
+    let currentFilterType = 'all';
+    let currentSearchQuery = '';
+    let configMode = 'none';
+    let selectedTemplateMode = 'split';
+
+    function selectTemplateMode(mode) {
+        selectedTemplateMode = mode;
+        const splitCard = document.getElementById('cardModeSplit');
+        const stdCard = document.getElementById('cardModeStandard');
+        const splitRadio = document.getElementById('radioModeSplit');
+        const stdRadio = document.getElementById('radioModeStandard');
+        const guidance = document.getElementById('templateTargetGuidance');
+        const applyBtn = document.getElementById('btnApplyTemplate');
+
+        if (splitCard) splitCard.classList.toggle('active', mode === 'split');
+        if (stdCard) stdCard.classList.toggle('active', mode === 'standard');
+        if (splitRadio) splitRadio.checked = (mode === 'split');
+        if (stdRadio) stdRadio.checked = (mode === 'standard');
+
+        if (guidance) {
+            if (mode === 'split') {
+                guidance.innerHTML = 'Saat menambah akun, pastikan memilih <strong>Provider: my_proxies.yaml</strong> agar akun Anda otomatis terhubung ke seluruh grup pisah trafik (Game, Streaming, dll).';
+            } else {
+                guidance.innerHTML = 'Saat menambah akun, pilih <strong>Provider: my_proxies.yaml</strong> agar tersimpan rapi tanpa merusak setting sistem <code>config.yaml</code>.';
+            }
+        }
+        if (applyBtn) {
+            applyBtn.innerHTML = `<i class="fa-solid fa-check"></i> Pasang Template ${mode === 'split' ? 'Pisah Trafik' : 'Standar'}`;
+        }
+    }
+
+    function updateTargetModeUI() {
+        const pill = document.getElementById('targetBadgePill');
+        const hint = document.getElementById('targetWarningHint');
+        if (!pill) return;
+
+        if (configMode === 'split') {
+            if ((selectedTarget || '').includes('my_proxies')) {
+                pill.style.display = 'inline-flex';
+                pill.className = 'target-badge-pill pill-success';
+                pill.title = 'Target ini terhubung ke grup Game & Streaming';
+                pill.innerHTML = '<i class="fa-solid fa-circle-check"></i> Mode Pisah Trafik (Target Tepat)';
+                if (hint) hint.style.display = 'none';
+            } else {
+                pill.style.display = 'inline-flex';
+                pill.className = 'target-badge-pill pill-warning';
+                pill.title = "Pilih 'Provider: my_proxies.yaml' agar akun masuk ke grup Game & Streaming!";
+                pill.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Disarankan: my_proxies.yaml';
+                if (hint) hint.style.display = 'block';
+            }
+        } else if (configMode === 'standard') {
+            pill.style.display = 'inline-flex';
+            pill.className = 'target-badge-pill pill-info';
+            pill.title = 'Mode Standar Clash All-in-One';
+            pill.innerHTML = '<i class="fa-solid fa-circle-info"></i> Mode Standar (All-in-One)';
+            if (hint) hint.style.display = 'none';
+        } else {
+            pill.style.display = 'none';
+            if (hint) hint.style.display = 'none';
+        }
+    }
+
+    let parsedAccounts = [];
+    let activeAccountIndex = 0;
+    let currentAccount = {
+        name: '', type: 'vless', server: '', port: 443, uuid: '',
+        password: '', cipher: 'auto', tls: true, skip_cert_verify: true,
+        servername: '', network: 'ws', ws_path: '/', ws_host: '', udp: true
+    };
+
+    let activeEditingItem = null;
+    let activeOriginalName = '';
+    let activeDeletingItem = null;
+
+    // Toast Helper
+    let toastTimer = null;
+    function showToast(title, desc) {
+        if (toastTimer) clearTimeout(toastTimer);
+        const toast = document.getElementById('brutalToast');
+        document.getElementById('toastTitle').textContent = title;
+        document.getElementById('toastDesc').textContent = desc;
+        toast.classList.add('active');
+        toastTimer = setTimeout(() => { toast.classList.remove('active'); }, 3200);
+    }
+
+    function switchMainTab(tab) {
+        document.getElementById('tabBtnAdd').classList.toggle('active', tab === 'add');
+        document.getElementById('tabBtnManage').classList.toggle('active', tab === 'manage');
+        document.getElementById('contentAdd').style.display = tab === 'add' ? 'block' : 'none';
+        document.getElementById('contentManage').style.display = tab === 'manage' ? 'block' : 'none';
+    }
+
+    function switchFormTab(tab) {
+        document.getElementById('fTabForm').classList.toggle('active', tab === 'form');
+        document.getElementById('fTabRaw').classList.toggle('active', tab === 'raw');
+        document.getElementById('wrapFormView').style.display = tab === 'form' ? 'grid' : 'none';
+        document.getElementById('wrapRawView').style.display = tab === 'raw' ? 'block' : 'none';
+        if (tab === 'raw') {
+            document.getElementById('fRawYaml').value = buildYamlFromItem(currentAccount);
+        }
+    }
+
+    // Link Parser
+    function parseVpnLink(link) {
+        link = link.trim();
+        if (!link) return null;
+
+        // VMess
+        if (link.toLowerCase().startsWith('vmess://')) {
+            try {
+                let b64 = link.substring(8).replace(/-/g, '+').replace(/_/g, '/');
+                while (b64.length % 4) b64 += '=';
+                let decoded = atob(b64);
+                try { decoded = decodeURIComponent(escape(decoded)); } catch (e) {}
+                let json = JSON.parse(decoded);
+                return {
+                    name: (json.ps || 'VMess-Node').replace(/^["']|["']$/g, ''),
+                    type: 'vmess', server: json.add || '', port: parseInt(json.port) || 443,
+                    uuid: json.id || '', password: '', cipher: 'auto',
+                    tls: json.tls === 'tls', skip_cert_verify: true,
+                    servername: json.sni || json.host || '', network: json.net || 'ws',
+                    ws_path: json.path || '/', ws_host: json.host || '',
+                    grpc_service_name: json.path || 'v2ray', udp: true
+                };
+            } catch (e) { return null; }
+        }
+
+        // VLESS / Trojan
+        if (link.toLowerCase().startsWith('vless://') || link.toLowerCase().startsWith('trojan://')) {
+            try {
+                let isVless = link.toLowerCase().startsWith('vless://');
+                let url = new URL(link);
+                let uuid = url.username;
+                let server = url.hostname;
+                let port = parseInt(url.port) || 443;
+                let name = decodeURIComponent(url.hash.substring(1)) || (isVless ? 'VLESS-Node' : 'Trojan-Node');
+                name = name.replace(/^["']|["']$/g, '');
+                let security = url.searchParams.get('security');
+                let sni = url.searchParams.get('sni') || '';
+                let tls = (security === 'tls' || security === 'reality' || sni !== '');
+                let netType = url.searchParams.get('type') || 'ws';
+
+                let rawPath = url.searchParams.get('path') || '/';
+                try { rawPath = decodeURIComponent(rawPath); } catch(e) {}
+                let rawHost = url.searchParams.get('host') || '';
+                try { rawHost = decodeURIComponent(rawHost); } catch(e) {}
+
+                return {
+                    name: name, type: isVless ? 'vless' : 'trojan', server: server, port: port,
+                    uuid: isVless ? uuid : '', password: !isVless ? uuid : '', cipher: 'auto',
+                    tls: tls, skip_cert_verify: true, servername: sni, network: netType,
+                    ws_path: rawPath, ws_host: rawHost,
+                    grpc_service_name: url.searchParams.get('serviceName') ? decodeURIComponent(url.searchParams.get('serviceName')) : 'v2ray',
+                    udp: true
+                };
+            } catch (e) { return null; }
+        }
+
+        // Shadowsocks
+        if (link.toLowerCase().startsWith('ss://')) {
+            try {
+                let rest = link.substring(5);
+                let name = 'SS-Node';
+                if (rest.includes('#')) {
+                    const parts = rest.split('#');
+                    rest = parts[0];
+                    name = decodeURIComponent(parts[1]).replace(/^["']|["']$/g, '');
+                }
+                let server = '', port = 443, method = 'aes-256-gcm', password = '';
+                if (rest.includes('@')) {
+                    const atParts = rest.split('@');
+                    let b64 = atParts[0].replace(/-/g, '+').replace(/_/g, '/');
+                    while (b64.length % 4) b64 += '=';
+                    const creds = atob(b64).split(':');
+                    method = creds[0]; password = creds.slice(1).join(':');
+                    const hostParts = atParts[1].split(':');
+                    server = hostParts[0]; port = parseInt(hostParts[1]) || 443;
+                } else {
+                    let b64 = rest.replace(/-/g, '+').replace(/_/g, '/');
+                    while (b64.length % 4) b64 += '=';
+                    const decoded = atob(b64);
+                    const atParts = decoded.split('@');
+                    const creds = atParts[0].split(':');
+                    method = creds[0]; password = creds.slice(1).join(':');
+                    const hostParts = atParts[1].split(':');
+                    server = hostParts[0]; port = parseInt(hostParts[1]) || 443;
+                }
+                return {
+                    name: name, type: 'ss', server: server, port: port,
+                    cipher: method, password: password, tls: false, skip_cert_verify: false,
+                    network: 'tcp', udp: true
+                };
+            } catch (e) { return null; }
+        }
+        return null;
+    }
+
+    function buildYamlFromItem(item) {
+        if (!item || !item.server) return '';
+        let y = `- name: "${item.name || 'Node'}"\n` +
+                `  type: ${item.type}\n` +
+                `  server: ${item.server}\n` +
+                `  port: ${item.port || 443}\n`;
+
+        if (item.type === 'vless' || item.type === 'vmess') {
+            y += `  uuid: ${item.uuid}\n  cipher: ${item.cipher || 'auto'}\n`;
+            if (item.type === 'vmess') y += `  alterId: 0\n`;
+        } else if (item.type === 'trojan' || item.type === 'ss') {
+            y += `  password: ${item.password}\n`;
+            if (item.type === 'ss') y += `  cipher: ${item.cipher || 'aes-256-gcm'}\n`;
+        }
+
+        y += `  tls: ${item.tls ? 'true' : 'false'}\n` +
+             `  skip-cert-verify: ${item.skip_cert_verify ? 'true' : 'false'}\n`;
+
+        if (item.servername) y += `  servername: ${item.servername}\n`;
+
+        let net = item.network || 'ws';
+        y += `  network: ${net}\n`;
+        if (net === 'ws') {
+            y += `  ws-opts:\n    path: ${item.ws_path || '/'}\n`;
+            if (item.ws_host) y += `    headers:\n      Host: ${item.ws_host}\n`;
+        } else if (net === 'grpc') {
+            y += `  grpc-opts:\n    grpc-service-name: ${item.grpc_service_name || 'v2ray'}\n`;
+        }
+
+        y += `  udp: ${item.udp ? 'true' : 'false'}\n`;
+        return y;
+    }
+
+    // Reaktif saat user memasukkan link VPN
+    function onRawLinksInput(val) {
+        const lines = val.trim().split('\n');
+        parsedAccounts = [];
+        lines.forEach(l => {
+            const line = l.trim();
+            if (line) {
+                const parsed = parseVpnLink(line);
+                if (parsed) parsedAccounts.push(parsed);
+            }
+        });
+
+        const chipBar = document.getElementById('chipBar');
+        if (parsedAccounts.length > 1) {
+            chipBar.style.display = 'flex';
+            document.getElementById('chipCount').textContent = parsedAccounts.length;
+            renderChips();
+        } else {
+            chipBar.style.display = 'none';
+        }
+
+        if (parsedAccounts.length > 0) {
+            activeAccountIndex = 0;
+            currentAccount = { ...parsedAccounts[0] };
+            populateFormFromCurrentAccount();
+            showToast('Form Terisi', `${parsedAccounts.length} akun berhasil diurai ke formulir!`);
+        }
+    }
+
+    function renderChips() {
+        const chipsScroll = document.getElementById('chipsScroll');
+        chipsScroll.innerHTML = '';
+        parsedAccounts.forEach((acc, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'chip-btn' + (activeAccountIndex === idx ? ' active' : '');
+            btn.innerHTML = `<span class="proto-tag proto-${acc.type}">${acc.type.toUpperCase()}</span> <span class="chip-name">${escapeHtml(acc.name || acc.server)}</span>`;
+            btn.onclick = () => {
+                activeAccountIndex = idx;
+                currentAccount = { ...parsedAccounts[idx] };
+                populateFormFromCurrentAccount();
+                renderChips();
+            };
+            chipsScroll.appendChild(btn);
+        });
+    }
+
+    function populateFormFromCurrentAccount() {
+        document.getElementById('fName').value = currentAccount.name || '';
+        document.getElementById('fType').value = currentAccount.type || 'vless';
+        document.getElementById('fPort').value = currentAccount.port || 443;
+        document.getElementById('fServer').value = currentAccount.server || '';
+        document.getElementById('fUUID').value = currentAccount.uuid || '';
+        document.getElementById('fPass').value = currentAccount.password || '';
+        document.getElementById('fNet').value = currentAccount.network || 'ws';
+        document.getElementById('fSni').value = currentAccount.servername || '';
+        document.getElementById('fWsPath').value = currentAccount.ws_path || '/';
+        document.getElementById('fWsHost').value = currentAccount.ws_host || '';
+        document.getElementById('fTLS').checked = !!currentAccount.tls;
+        document.getElementById('fSkipCert').checked = !!currentAccount.skip_cert_verify;
+        document.getElementById('fUDP').checked = !!currentAccount.udp;
+
+        onFormTypeChange();
+        onFormNetChange();
+
+        const badge = document.getElementById('formProtoBadge');
+        badge.className = 'proto-tag proto-' + currentAccount.type;
+        badge.textContent = (currentAccount.type || 'VLESS').toUpperCase();
+
+        document.getElementById('fRawYaml').value = buildYamlFromItem(currentAccount);
+    }
+
+    function pullFormValues() {
+        currentAccount.name = document.getElementById('fName').value.trim();
+        currentAccount.type = document.getElementById('fType').value;
+        currentAccount.port = parseInt(document.getElementById('fPort').value) || 443;
+        currentAccount.server = document.getElementById('fServer').value.trim();
+        currentAccount.uuid = document.getElementById('fUUID').value.trim();
+        currentAccount.password = document.getElementById('fPass').value.trim();
+        currentAccount.network = document.getElementById('fNet').value;
+        currentAccount.servername = document.getElementById('fSni').value.trim();
+        currentAccount.ws_path = document.getElementById('fWsPath').value.trim() || '/';
+        currentAccount.ws_host = document.getElementById('fWsHost').value.trim();
+        currentAccount.tls = document.getElementById('fTLS').checked;
+        currentAccount.skip_cert_verify = document.getElementById('fSkipCert').checked;
+        currentAccount.udp = document.getElementById('fUDP').checked;
+
+        if (parsedAccounts.length > 0 && parsedAccounts[activeAccountIndex]) {
+            parsedAccounts[activeAccountIndex] = { ...currentAccount };
+        }
+    }
+
+    function onFormInput() {
+        pullFormValues();
+        document.getElementById('fRawYaml').value = buildYamlFromItem(currentAccount);
+    }
+
+    function onFormTypeChange() {
+        const type = document.getElementById('fType').value;
+        const isUuid = type === 'vless' || type === 'vmess';
+        document.getElementById('wrapFUUID').style.display = isUuid ? 'flex' : 'none';
+        document.getElementById('wrapFPass').style.display = isUuid ? 'none' : 'flex';
+        pullFormValues();
+        const badge = document.getElementById('formProtoBadge');
+        badge.className = 'proto-tag proto-' + type;
+        badge.textContent = type.toUpperCase();
+        document.getElementById('fRawYaml').value = buildYamlFromItem(currentAccount);
+    }
+
+    function onFormNetChange() {
+        const net = document.getElementById('fNet').value;
+        const isWs = net === 'ws';
+        document.getElementById('wrapFWsPath').style.display = isWs ? 'flex' : 'none';
+        document.getElementById('wrapFWsHost').style.display = isWs ? 'flex' : 'none';
+        pullFormValues();
+        document.getElementById('fRawYaml').value = buildYamlFromItem(currentAccount);
+    }
+
+    function onRawYamlInput() {
+        // Power users edit YAML directly
+    }
+
+    function resetForm() {
+        document.getElementById('rawLinksInput').value = '';
+        parsedAccounts = [];
+        activeAccountIndex = 0;
+        document.getElementById('chipBar').style.display = 'none';
+        currentAccount = {
+            name: '', type: 'vless', server: '', port: 443, uuid: '',
+            password: '', cipher: 'auto', tls: true, skip_cert_verify: true,
+            servername: '', network: 'ws', ws_path: '/', ws_host: '', udp: true
+        };
+        populateFormFromCurrentAccount();
+    }
+
+    async function pasteFromClipboard() {
+        try {
+            const text = await navigator.clipboard.readText();
+            if (text) {
+                document.getElementById('rawLinksInput').value = text;
+                onRawLinksInput(text);
+            }
+        } catch(e) {
+            showToast('Peringatan', 'Silakan tempel langsung ke kotak input.');
+        }
+    }
+
+    // Save single account from form
+    async function saveCurrentFormAccount() {
+        pullFormValues();
+        if (!currentAccount.server) {
+            showToast('Peringatan', 'Harap isi Alamat Server / IP');
+            return;
+        }
+        if (!selectedTarget) {
+            showToast('Peringatan', 'Pilih file target penyimpanan terlebih dahulu');
+            return;
+        }
+
+        const btn = document.getElementById('btnSaveCurrent');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+
+        try {
+            const res = await fetch('/api/clash/accounts/add', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ target_file: selectedTarget, item: currentAccount })
+            });
+            const data = await res.json();
+            if (data.status === 'success') {
+                showToast('Sukses Ditambahkan', `Akun ${currentAccount.name || 'Proxy'} berhasil disimpan!`);
+                resetForm();
+                switchMainTab('manage');
+                await loadTargets(true);
+            } else {
+                showToast('Gagal Menambahkan', data.message);
+            }
+        } catch(e) {
+            showToast('Error', 'Gagal menghubungi server.');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan Akun';
+        }
+    }
+
+    // Save all parsed accounts
+    async function saveAllParsedAccounts() {
+        if (parsedAccounts.length === 0 || !selectedTarget) return;
+        try {
+            const res = await fetch('/api/clash/accounts/add', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ target_file: selectedTarget, items: parsedAccounts })
+            });
+            const data = await res.json();
+            if (data.status === 'success') {
+                showToast('Semua Akun Disimpan', data.message);
+                resetForm();
+                switchMainTab('manage');
+                await loadTargets(true);
+            } else {
+                showToast('Gagal', data.message);
+            }
+        } catch(e) {
+            showToast('Error', 'Terjadi kesalahan sistem.');
+        }
+    }
+
+    // API Targets & Accounts
+    async function loadTargets(keepSelection = true) {
+        const icon = document.getElementById('refreshIcon');
+        if (icon) icon.classList.add('fa-spin');
+        try {
+            const res = await fetch('/api/clash/targets?_=' + Date.now());
+            const data = await res.json();
+            if (data.status === 'success' && Array.isArray(data.targets)) {
+                targetFiles = data.targets;
+                if (data.config_mode) {
+                    configMode = data.config_mode;
+                }
+                const banner = document.getElementById('templateAlertBanner');
+                if (banner) {
+                    banner.style.display = data.needs_template ? 'flex' : 'none';
+                }
+                const sel = document.getElementById('targetSelect');
+                sel.innerHTML = '';
+                targetFiles.forEach(t => {
+                    const opt = document.createElement('option');
+                    opt.value = t.path;
+                    opt.textContent = `${t.label} (${t.count} Akun)`;
+                    sel.appendChild(opt);
+                });
+
+                if (!keepSelection || !selectedTarget || !targetFiles.find(t => t.path === selectedTarget)) {
+                    if (targetFiles.length > 0) {
+                        const defProv = targetFiles.find(t => t.path.includes('my_proxies'));
+                        if (defProv) selectedTarget = defProv.path;
+                        else selectedTarget = targetFiles[0].path;
+                    }
+                }
+                sel.value = selectedTarget;
+                updateTargetModeUI();
+                if (selectedTarget) await loadAccounts(selectedTarget);
+            }
+        } catch (e) {
+            console.error(e);
+        } finally {
+            if (icon) icon.classList.remove('fa-spin');
+        }
+    }
+
+    function openTemplateModal() {
+        document.getElementById('modalTemplate').classList.add('active');
+    }
+    function closeTemplateModal() {
+        document.getElementById('modalTemplate').classList.remove('active');
+    }
+    async function applyBFRTemplate(mode = null) {
+        const targetMode = mode || selectedTemplateMode || 'split';
+        const btn = document.getElementById('btnApplyTemplate');
+        const bannerBtn = document.getElementById('btnBannerApplyTemplate');
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memasang...';
+        }
+        if (bannerBtn) {
+            bannerBtn.disabled = true;
+            bannerBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memasang...';
+        }
+        try {
+            const res = await fetch('/api/clash/template/apply', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ mode: targetMode })
+            });
+            const data = await res.json();
+            if (data.status === 'success') {
+                const modeLabel = targetMode === 'split' ? 'Pisah Trafik' : 'Standar';
+                showToast('Template Berhasil Dipasang!', `Config ${modeLabel} & my_proxies.yaml telah aktif.`);
+                closeTemplateModal();
+                const banner = document.getElementById('templateAlertBanner');
+                if (banner) banner.style.display = 'none';
+                await loadTargets(false);
+                if (data.default_provider) {
+                    selectedTarget = data.default_provider;
+                    updateTargetModeUI();
+                    await loadAccounts(selectedTarget);
+                }
+                openRestartBFRModal();
+            } else {
+                showToast('Gagal', data.message || 'Gagal memasang template');
+            }
+        } catch (e) {
+            showToast('Error', 'Gagal memproses pemasangan template');
+        } finally {
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-check"></i> Pasang Template ${targetMode === 'split' ? 'Pisah Trafik' : 'Standar'}`;
+            }
+            if (bannerBtn) {
+                bannerBtn.disabled = false;
+                bannerBtn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Pasang Template BFR (1-Klik)';
+            }
+        }
+    }
+
+    function openRestartBFRModal() {
+        document.getElementById('modalRestartBFR').classList.add('active');
+    }
+    function closeRestartBFRModal() {
+        document.getElementById('modalRestartBFR').classList.remove('active');
+    }
+    async function restartBFRService() {
+        const btn = document.getElementById('btnRestartBFR');
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Merestart...';
+        }
+        try {
+            const res = await fetch('/api/bfr/control', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'restart' })
+            });
+            const data = await res.json();
+            if (data.status === 'success') {
+                showToast('BFR Direstart', 'Layanan Box for Root berhasil direstart!');
+                closeRestartBFRModal();
+            } else {
+                showToast('Info', data.message || 'Perintah restart dikirim');
+            }
+        } catch (e) {
+            showToast('Error', 'Gagal merestart layanan BFR');
+        } finally {
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-rotate-right"></i> Restart Layanan BFR';
+            }
+        }
+    }
+
+    async function loadAccounts(targetPath) {
+        const container = document.getElementById('accountsContainer');
+        container.innerHTML = '<div class="loading-state"><i class="fa-solid fa-spinner fa-spin"></i><p>Memuat akun...</p></div>';
+
+        try {
+            const res = await fetch('/api/clash/accounts?target=' + encodeURIComponent(targetPath) + '&_=' + Date.now());
+            const data = await res.json();
+            if (data.status === 'success') {
+                accounts = data.accounts || [];
+                totalAccounts = data.total || 0;
+                accountsStats = data.stats || {};
+                document.getElementById('totalBadge').textContent = totalAccounts;
+                renderPills();
+                renderAccountsList();
+            } else {
+                container.innerHTML = `<div class="empty-state"><h3>Gagal memuat</h3><p>${data.message || 'Error'}</p></div>`;
+            }
+        } catch (e) {
+            container.innerHTML = `<div class="empty-state"><h3>Koneksi Terputus</h3><p>Tidak dapat terhubung ke server ProjectX.</p></div>`;
+        }
+    }
+
+    function onTargetSelectChange() {
+        selectedTarget = document.getElementById('targetSelect').value;
+        updateTargetModeUI();
+        if (selectedTarget) loadAccounts(selectedTarget);
+    }
+
+    function renderPills() {
+        const container = document.getElementById('pillsContainer');
+        container.innerHTML = '';
+        const allBtn = document.createElement('button');
+        allBtn.className = 'pill' + (currentFilterType === 'all' ? ' active' : '');
+        allBtn.textContent = `Semua (${totalAccounts})`;
+        allBtn.onclick = () => setFilterType('all', allBtn);
+        container.appendChild(allBtn);
+
+        Object.entries(accountsStats).forEach(([type, count]) => {
+            const btn = document.createElement('button');
+            btn.className = 'pill' + (currentFilterType === type ? ' active' : '');
+            btn.textContent = `${type.toUpperCase()} (${count})`;
+            btn.onclick = () => setFilterType(type, btn);
+            container.appendChild(btn);
+        });
+    }
+
+    function setFilterType(type, btnEl) {
+        currentFilterType = type;
+        document.querySelectorAll('.protocol-pills .pill').forEach(p => p.classList.remove('active'));
+        if (btnEl) btnEl.classList.add('active');
+        renderAccountsList();
+    }
+
+    function onSearchInput(val) {
+        currentSearchQuery = val;
+        document.getElementById('clearSearchBtn').style.display = val ? 'block' : 'none';
+        renderAccountsList();
+    }
+
+    function clearSearch() {
+        document.getElementById('searchInput').value = '';
+        currentSearchQuery = '';
+        document.getElementById('clearSearchBtn').style.display = 'none';
+        renderAccountsList();
+    }
+
+    function renderAccountsList() {
+        const container = document.getElementById('accountsContainer');
+        let filtered = accounts.filter(acc => {
+            if (currentFilterType !== 'all' && (acc.type || '').toLowerCase() !== currentFilterType) return false;
+            if (currentSearchQuery.trim()) {
+                const q = currentSearchQuery.toLowerCase().trim();
+                const mName = (acc.name || '').toLowerCase().includes(q);
+                const mServer = (acc.server || '').toLowerCase().includes(q);
+                const mSni = (acc.servername || acc.ws_host || '').toLowerCase().includes(q);
+                return mName || mServer || mSni;
+            }
+            return true;
+        });
+
+        if (filtered.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon"><i class="fa-solid fa-layer-group"></i></div>
+                    <h3>Tidak ada akun ditemukan</h3>
+                    <p>${currentSearchQuery || currentFilterType !== 'all' ? 'Tidak ada akun yang cocok dengan filter.' : 'File ini masih kosong. Silakan tambahkan akun pertama Anda!'}</p>
+                    <button class="btn btn-save-yellow" onclick="switchMainTab('add')"><i class="fa-solid fa-plus"></i> Tambah Akun Sekarang</button>
+                </div>
+            `;
+            return;
+        }
+
+        let html = '<div class="account-grid">';
+        filtered.forEach(acc => {
+            const pType = (acc.type || 'vless').toLowerCase();
+            const protoLabel = pType.toUpperCase();
+            html += `
+                <div class="account-card type-${pType}">
+                    <div class="acc-header">
+                        <div class="acc-title-wrap">
+                            <span class="proto-badge proto-${pType}">${protoLabel}</span>
+                            <h3 class="acc-name" title="${escapeHtml(acc.name)}">${escapeHtml(acc.name)}</h3>
+                        </div>
+                        <div class="acc-actions">
+                            <button class="action-btn edit" title="Edit Akun" onclick="openEditAccount(${acc.index})"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button class="action-btn share" title="Salin Link VPN" onclick="copyLinkByIndex(${acc.index})"><i class="fa-solid fa-link"></i></button>
+                            <button class="action-btn copy" title="Salin YAML" onclick="copyYamlByIndex(${acc.index})"><i class="fa-solid fa-code"></i></button>
+                            <button class="action-btn delete" title="Hapus Akun" onclick="openDeleteAccount(${acc.index})"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
+                    </div>
+                    <div class="acc-details">
+                        <div class="detail-row">
+                            <span class="detail-label"><i class="fa-solid fa-globe"></i> Server:</span>
+                            <span class="detail-val mono">${escapeHtml(acc.server)}:${acc.port}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label"><i class="fa-solid fa-network-wired"></i> Jaringan:</span>
+                            <span class="detail-val">${(acc.network || 'ws').toUpperCase()}</span>
+                        </div>
+                        ${(acc.servername || acc.ws_host) ? `
+                        <div class="detail-row highlight">
+                            <span class="detail-label"><i class="fa-solid fa-bug"></i> Bug SNI:</span>
+                            <span class="detail-val mono">${escapeHtml(acc.servername || acc.ws_host)}</span>
+                        </div>` : ''}
+                        ${(acc.ws_path && acc.ws_path !== '/') ? `
+                        <div class="detail-row">
+                            <span class="detail-label"><i class="fa-solid fa-route"></i> Path:</span>
+                            <span class="detail-val mono">${escapeHtml(acc.ws_path)}</span>
+                        </div>` : ''}
+                        <div class="detail-row badges-row">
+                            <span class="tag-status ${acc.tls ? 'tls-on' : 'tls-off'}">
+                                <i class="fa-solid ${acc.tls ? 'fa-lock' : 'fa-lock-open'}"></i> ${acc.tls ? 'TLS Aktif' : 'Non-TLS'}
+                            </span>
+                            ${acc.udp ? '<span class="tag-status tag-udp">UDP</span>' : ''}
+                            ${acc.skip_cert_verify ? '<span class="tag-status tag-skip">Skip Cert</span>' : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        html += '</div>';
+        container.innerHTML = html;
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str).replace(/[&<>"']/g, s => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[s]);
+    }
+
+    // Modal Edit
+    function openEditAccount(index) {
+        const item = accounts.find(a => a.index === index);
+        if (!item) return;
+        activeEditingItem = JSON.parse(JSON.stringify(item));
+        activeOriginalName = activeEditingItem.name || '';
+        switchEditModalTab('form');
+
+        document.getElementById('editName').value = activeEditingItem.name || '';
+        document.getElementById('editType').value = activeEditingItem.type || 'vless';
+        document.getElementById('editPort').value = activeEditingItem.port || 443;
+        document.getElementById('editServer').value = activeEditingItem.server || '';
+        document.getElementById('editUUID').value = activeEditingItem.uuid || '';
+        document.getElementById('editPassword').value = activeEditingItem.password || '';
+        document.getElementById('editNetwork').value = activeEditingItem.network || 'ws';
+        document.getElementById('editServername').value = activeEditingItem.servername || '';
+        document.getElementById('editWsPath').value = activeEditingItem.ws_path || '/';
+        document.getElementById('editWsHost').value = activeEditingItem.ws_host || '';
+        document.getElementById('editTLS').checked = !!activeEditingItem.tls;
+        document.getElementById('editSkipCert').checked = !!activeEditingItem.skip_cert_verify;
+        document.getElementById('editUDP').checked = !!activeEditingItem.udp;
+
+        onEditTypeChange();
+        onEditNetworkChange();
+        document.getElementById('editRawTextarea').value = buildYamlFromItem(activeEditingItem);
+        document.getElementById('editModal').classList.add('active');
+    }
+
+    function onEditTypeChange() {
+        const type = document.getElementById('editType').value;
+        const isUuid = type === 'vless' || type === 'vmess';
+        document.getElementById('wrapEditUUID').style.display = isUuid ? 'flex' : 'none';
+        document.getElementById('wrapEditPass').style.display = isUuid ? 'none' : 'flex';
+    }
+
+    function onEditNetworkChange() {
+        const net = document.getElementById('editNetwork').value;
+        const isWs = net === 'ws';
+        document.getElementById('wrapEditWsPath').style.display = isWs ? 'flex' : 'none';
+        document.getElementById('wrapEditWsHost').style.display = isWs ? 'flex' : 'none';
+    }
+
+    function switchEditModalTab(tab) {
+        document.getElementById('mTabForm').classList.toggle('active', tab === 'form');
+        document.getElementById('mTabRaw').classList.toggle('active', tab === 'raw');
+        document.getElementById('editFormWrap').style.display = tab === 'form' ? 'grid' : 'none';
+        document.getElementById('editRawWrap').style.display = tab === 'raw' ? 'block' : 'none';
+        if (tab === 'raw' && activeEditingItem) {
+            pullEditFormValues();
+            document.getElementById('editRawTextarea').value = buildYamlFromItem(activeEditingItem);
+        }
+    }
+
+    function pullEditFormValues() {
+        if (!activeEditingItem) return;
+        activeEditingItem.name = document.getElementById('editName').value;
+        activeEditingItem.type = document.getElementById('editType').value;
+        activeEditingItem.port = parseInt(document.getElementById('editPort').value) || 443;
+        activeEditingItem.server = document.getElementById('editServer').value;
+        activeEditingItem.uuid = document.getElementById('editUUID').value;
+        activeEditingItem.password = document.getElementById('editPassword').value;
+        activeEditingItem.network = document.getElementById('editNetwork').value;
+        activeEditingItem.servername = document.getElementById('editServername').value;
+        activeEditingItem.ws_path = document.getElementById('editWsPath').value;
+        activeEditingItem.ws_host = document.getElementById('editWsHost').value;
+        activeEditingItem.tls = document.getElementById('editTLS').checked;
+        activeEditingItem.skip_cert_verify = document.getElementById('editSkipCert').checked;
+        activeEditingItem.udp = document.getElementById('editUDP').checked;
+    }
+
+    async function submitEdit() {
+        if (!activeEditingItem || !selectedTarget) return;
+        const isRawTab = document.getElementById('mTabRaw').classList.contains('active');
+
+        let payload = {
+            target_file: selectedTarget,
+            index: activeEditingItem.index,
+            original_name: activeOriginalName || activeEditingItem.name
+        };
+
+        if (isRawTab) {
+            const rawYaml = document.getElementById('editRawTextarea').value.trim();
+            if (!rawYaml) {
+                showToast('Peringatan', 'Kode YAML tidak boleh kosong.');
+                return;
+            }
+            payload.yaml_content = rawYaml;
+        } else {
+            pullEditFormValues();
+            delete activeEditingItem.raw_yaml;
+            delete activeEditingItem.raw;
+            payload.item = activeEditingItem;
+        }
+
+        try {
+            const res = await fetch('/api/clash/accounts/update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (data.status === 'success') {
+                showToast('Berhasil Diperbarui', 'Akun telah disimpan.');
+                closeEditModal();
+                await loadAccounts(selectedTarget);
+            } else {
+                showToast('Gagal Memperbarui', data.message);
+            }
+        } catch (e) {
+            showToast('Error', 'Terjadi kesalahan sistem.');
+        }
+    }
+
+    function closeEditModal() {
+        document.getElementById('editModal').classList.remove('active');
+        activeEditingItem = null;
+        activeOriginalName = '';
+    }
+
+    // Modal Hapus
+    function openDeleteAccount(index) {
+        const item = accounts.find(a => a.index === index);
+        if (!item) return;
+        activeDeletingItem = item;
+        document.getElementById('delAccName').textContent = item.name;
+        document.getElementById('delAccSub').textContent = `${item.server}:${item.port} (${(item.type || '').toUpperCase()})`;
+        document.getElementById('deleteModal').classList.add('active');
+    }
+
+    async function confirmDelete() {
+        if (!activeDeletingItem || !selectedTarget) return;
+        try {
+            const res = await fetch('/api/clash/accounts/delete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    target_file: selectedTarget,
+                    index: activeDeletingItem.index,
+                    name: activeDeletingItem.name
+                })
+            });
+            const data = await res.json();
+            if (data.status === 'success') {
+                showToast('Akun Dihapus', data.message);
+                closeDeleteModal();
+                await loadTargets(true);
+            } else {
+                showToast('Gagal Menghapus', data.message);
+            }
+        } catch (e) {
+            showToast('Error', 'Gagal memproses penghapusan.');
+        }
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').classList.remove('active');
+        activeDeletingItem = null;
+    }
+
+    // Create Provider
+    function openCreateProviderModal() {
+        document.getElementById('newProviderInput').value = '';
+        document.getElementById('createProviderModal').classList.add('active');
+        setTimeout(() => document.getElementById('newProviderInput').focus(), 100);
+    }
+
+    function closeCreateProviderModal() {
+        document.getElementById('createProviderModal').classList.remove('active');
+    }
+
+    async function createNewProvider() {
+        const name = document.getElementById('newProviderInput').value.trim();
+        if (!name) return;
+        try {
+            const res = await fetch('/api/clash/targets/create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name })
+            });
+            const data = await res.json();
+            if (data.status === 'success') {
+                showToast('Provider Dibuat', data.message);
+                closeCreateProviderModal();
+                await loadTargets(false);
+                if (data.path) {
+                    selectedTarget = data.path;
+                    document.getElementById('targetSelect').value = selectedTarget;
+                    await loadAccounts(selectedTarget);
+                }
+            } else {
+                showToast('Gagal', data.message);
+            }
+        } catch (e) {
+            showToast('Error', 'Gagal membuat provider.');
+        }
+    }
+
+    // Copy Helpers
+    function copyLinkByIndex(index) {
+        const item = accounts.find(a => a.index === index);
+        if (!item) return;
+        const link = generateVpnLink(item);
+        if (link) copyToClipboard(link, 'Link Akun Tersalin');
+    }
+
+    function copyYamlByIndex(index) {
+        const item = accounts.find(a => a.index === index);
+        if (!item) return;
+        copyToClipboard(buildYamlFromItem(item), 'YAML Akun Tersalin');
+    }
+
+    function copyToClipboard(txt, title) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(txt).then(() => showToast(title, 'Disalin ke clipboard'))
+                .catch(() => fallbackCopy(txt, title));
+        } else {
+            fallbackCopy(txt, title);
+        }
+    }
+
+    function fallbackCopy(txt, title) {
+        const ta = document.createElement('textarea');
+        ta.value = txt;
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); showToast(title, 'Disalin ke clipboard'); } catch (e) {}
+        document.body.removeChild(ta);
+    }
+
+    function syncTheme() {
+        try {
+            const parentHtml = window.parent?.document?.documentElement;
+            if (parentHtml) {
+                const theme = parentHtml.getAttribute('data-theme');
+                if (theme && theme !== 'dark') document.documentElement.setAttribute('data-theme', theme);
+                else document.documentElement.removeAttribute('data-theme');
+            } else {
+                const savedMode = localStorage.getItem('brutalist_mode') || localStorage.getItem('brutalist_theme');
+                if (savedMode && savedMode !== 'dark') document.documentElement.setAttribute('data-theme', savedMode);
+                else document.documentElement.removeAttribute('data-theme');
+            }
+        } catch(e) {}
+    }
+
+    syncTheme();
+    setInterval(syncTheme, 1000);
+
+    // Initial
+    loadTargets();
+</script>
+</body>
+</html>

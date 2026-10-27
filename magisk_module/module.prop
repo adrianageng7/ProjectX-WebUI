@@ -1,0 +1,6 @@
+id=projectx-webui
+name=ProjectX WebUI
+version=v2.3.1
+versionCode=24
+author=MarkX (@ntpsbl)
+description=Dashboard WebUI serbaguna untuk Android. Mendukung Box for Root (Taamarin). Port 80. Akses dari http://IP_HP_KAMU.

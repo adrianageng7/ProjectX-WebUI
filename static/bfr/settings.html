@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Box Settings</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+/* ========== VARIABLES & RESET ========== */
+:root {
+    --bg: #18151e; --paper: #24202b; --panel-alt: #302b38;
+    --ink: #fffaf4; --muted: #aaa2ad; --line: #0d0b10;
+    --primary: #c538ff; --secondary: #00e5ff;
+    --pink: #ff5ca8; --cyan: #55dfff; --yellow: #ffe14a; 
+    --lime: #b8f34a; --orange: #ff9955; --purple: #9b7cff;
+    --shadow: 4px 5px 0 #08070a;
+}
+:root[data-theme="light"] {
+    --bg: #fff6e8; --paper: #fffdf8; --panel-alt: #e8e5da;
+    --ink: #17151a; --muted: #77717a; --line: #17151a;
+    --shadow: 4px 5px 0 #17151a;
+}
+
+/* Color Themes */
+:root[data-color="synthwave"] { --pink: #ff2d95; --yellow: #ff2d95; --cyan: #00e5ff; --lime: #ff2d95; --purple: #c538ff; --orange: #ff6b35; }
+:root[data-color="synthwave"][data-theme="dark"], :root[data-color="synthwave"]:not([data-theme]) { --panel-alt: #2a1035; }
+:root[data-color="toxic"] { --pink: #ff4444; --yellow: #39ff14; --cyan: #39ff14; --lime: #39ff14; --purple: #ff8800; --orange: #ff6600; }
+:root[data-color="toxic"][data-theme="dark"], :root[data-color="toxic"]:not([data-theme]) { --panel-alt: #1a2810; }
+:root[data-color="arctic"] { --pink: #64b5f6; --yellow: #40c4ff; --cyan: #80d8ff; --lime: #82b1ff; --purple: #448aff; --orange: #29b6f6; }
+:root[data-color="arctic"][data-theme="dark"], :root[data-color="arctic"]:not([data-theme]) { --panel-alt: #1a2535; }
+:root[data-color="sunset"] { --pink: #ff1744; --yellow: #ff6d00; --cyan: #ffab40; --lime: #ff9100; --purple: #ff5252; --orange: #ff3d00; }
+:root[data-color="sunset"][data-theme="dark"], :root[data-color="sunset"]:not([data-theme]) { --panel-alt: #351a10; }
+:root[data-color="lavender"] { --pink: #f48fb1; --yellow: #b388ff; --cyan: #ea80fc; --lime: #ce93d8; --purple: #7c4dff; --orange: #e040fb; }
+:root[data-color="lavender"][data-theme="dark"], :root[data-color="lavender"]:not([data-theme]) { --panel-alt: #271a35; }
+
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Manrope', system-ui, sans-serif; }
+body { background:var(--bg); color:var(--ink); padding:15px; padding-bottom:100px; transition:all .2s; }
+.wrap { max-width:800px; margin:0 auto; }
+
+/* ========== HEADER ========== */
+.header{ margin-bottom:20px; }
+.header .eyebrow { font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:1px; color:var(--cyan); display:flex; align-items:center; gap:6px; margin-bottom:6px;}
+.live-dot { width:8px; height:8px; background:var(--cyan); border-radius:50%; animation:blink 1.5s infinite; }
+@keyframes blink { 0%, 100%{opacity:1;} 50%{opacity:0.4;} }
+.header h1 { font-size:28px; font-weight:950; letter-spacing:-1.5px; text-transform:uppercase; color:var(--ink); line-height:1; }
+.header .desc { font-size:12px; font-weight:700; color:var(--muted); margin-top:8px; line-height:1.5; }
+
+/* ========== CARDS & FORMS ========== */
+.card{ background:var(--paper); border:2px solid var(--line); border-radius:16px; padding:20px; box-shadow:var(--shadow); margin-bottom:20px; }
+.card-header{ display:flex; align-items:center; gap:10px; font-size:15px; font-weight:900; text-transform:uppercase; margin-bottom:15px; padding-bottom:10px; border-bottom:2px dashed var(--line); color:var(--ink); }
+
+.form-group{ margin-bottom:15px; }
+.form-group label{ display:block; font-size:11px; font-weight:900; text-transform:uppercase; color:var(--muted); margin-bottom:6px; letter-spacing:0.8px; }
+
+input[type="text"], select {
+    width: 100%;
+    background: var(--panel-alt);
+    border: 2px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 16px;
+    color: var(--ink);
+    font-size: 14px;
+    font-weight: 800;
+    transition: all 0.2s;
+    appearance: none;
+    -webkit-appearance: none;
+}
+input:focus, select:focus { border-color: var(--cyan); box-shadow: 2px 2px 0 var(--cyan); }
+
+/* Custom select wrapper for arrow */
+.select-wrapper { position: relative; }
+.select-wrapper::after {
+    content: '\f078';
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    position: absolute;
+    right: 16px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    pointer-events: none;
+    font-size: 12px;
+}
+
+/* Floating Save Button */
+.save-container { position: fixed; bottom: 20px; left: 0; right: 0; display: flex; justify-content: center; z-index: 100; pointer-events: none; }
+.btn-save { pointer-events: auto; background: var(--cyan); color: #000; border: 2px solid var(--line); padding: 14px 32px; border-radius: 50px; font-size: 14px; font-weight: 950; text-transform: uppercase; cursor: pointer; box-shadow: 4px 4px 0 var(--line); display: flex; align-items: center; gap: 10px; transition: transform 0.1s, box-shadow 0.1s; letter-spacing: 0.5px; }
+.btn-save:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--line); filter:brightness(1.1); }
+.btn-save:active { transform: translate(2px, 2px); box-shadow: none; }
+
+/* Loader State */
+.empty-state{ text-align:center; padding:40px 20px; color:var(--muted); font-weight:800; font-size:14px; text-transform:uppercase; }
+
+/* ========== MODALS ========== */
+.custom-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.6); z-index: 10000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.2s ease, visibility 0.2s ease; padding: 16px; }
+.custom-modal.show { opacity: 1; visibility: visible; }
+.modal-card { background: var(--paper); border: 2px solid var(--line); border-radius: 16px; padding: 20px; width: 380px; max-width: 100%; box-shadow: var(--shadow); transform: scale(0.9); transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.custom-modal.show .modal-card { transform: scale(1) rotate(-0.5deg); }
+.modal-title { font-size: 14px; font-weight: 950; text-transform: uppercase; letter-spacing: 0.5px; background: var(--cyan); color: #000; padding: 4px 10px; border: 2px solid var(--line); border-radius: 6px; box-shadow: 2px 2px 0 var(--line); display: inline-block; margin-bottom: 14px; transform: rotate(-2deg); }
+.modal-body { font-size: 13px; line-height: 1.6; color: var(--ink); margin-bottom: 20px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+.btn-modal { padding: 8px 16px; font-weight: 950; font-size: 12px; border-radius: 8px; border: 2px solid var(--line); cursor: pointer; box-shadow: 3px 3px 0 var(--line); text-transform: uppercase; transition: all 0.1s ease; }
+.btn-modal:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0px var(--line); }
+.btn-modal:active { transform: translate(1px, 1px); box-shadow: none; }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <div class="header">
+        <div class="eyebrow"><span class="live-dot"></span> Core System</div>
+        <h1>Box Settings</h1>
+        <div class="desc">Konfigurasi file settings.ini untuk Box for Root.</div>
+    </div>
+
+    <div id="loading" class="empty-state">
+        <i class="fa-solid fa-spinner fa-spin"></i> Memuat Konfigurasi...
+    </div>
+
+    <form id="settingsForm" style="display:none;" onsubmit="saveSettings(event)">
+        
+        <div class="card">
+            <div class="card-header" style="border-bottom-color:var(--cyan);"><i class="fa-solid fa-server" style="color:var(--cyan);"></i> Core & Network</div>
+            
+            <div class="form-group">
+                <label>Bin Name</label>
+                <div class="select-wrapper">
+                    <select name="bin_name" id="bin_name">
+                        <option value="clash">CLASH</option>
+                        <option value="sing-box">SING-BOX</option>
+                        <option value="xray">XRAY</option>
+                        <option value="v2fly">V2FLY</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>XClash Option</label>
+                <div class="select-wrapper">
+                    <select name="xclash_option" id="xclash_option">
+                        <option value="mihomo">MIHOMO</option>
+                        <option value="premium">PREMIUM</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Network Mode</label>
+                <div class="select-wrapper">
+                    <select name="network_mode" id="network_mode">
+                        <option value="redirect">REDIRECT</option>
+                        <option value="tproxy">TPROXY</option>
+                        <option value="mixed">MIXED</option>
+                        <option value="enhance">ENHANCE</option>
+                        <option value="tun">TUN</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Proxy Mode</label>
+                <div class="select-wrapper">
+                    <select name="proxy_mode" id="proxy_mode">
+                        <option value="blacklist">BLACKLIST</option>
+                        <option value="whitelist">WHITELIST</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>IPv6</label>
+                <div class="select-wrapper">
+                    <select name="ipv6" id="ipv6">
+                        <option value="true">TRUE</option>
+                        <option value="false">FALSE</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>QUIC (HTTP/3 UDP 443)</label>
+                <div class="select-wrapper">
+                    <select name="quic" id="quic">
+                        <option value="disable">DISABLE (Fix Twitter/X Video & Cloudflare)</option>
+                        <option value="enable">ENABLE</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Port Detect</label>
+                <div class="select-wrapper">
+                    <select name="port_detect" id="port_detect">
+                        <option value="true">TRUE</option>
+                        <option value="false">FALSE</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header" style="border-bottom-color:var(--pink);"><i class="fa-solid fa-microchip" style="color:var(--pink);"></i> Cgroup & Tuning</div>
+            
+            <div class="form-group">
+                <label>Cgroup Cpuset</label>
+                <div class="select-wrapper">
+                    <select name="cgroup_cpuset" id="cgroup_cpuset">
+                        <option value="true">TRUE</option>
+                        <option value="false">FALSE</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Cgroup Blkio</label>
+                <div class="select-wrapper">
+                    <select name="cgroup_blkio" id="cgroup_blkio">
+                        <option value="true">TRUE</option>
+                        <option value="false">FALSE</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Cgroup Memcg</label>
+                <div class="select-wrapper">
+                    <select name="cgroup_memcg" id="cgroup_memcg">
+                        <option value="true">TRUE</option>
+                        <option value="false">FALSE</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Memcg Limit</label>
+                <input type="text" name="memcg_limit" id="memcg_limit" placeholder="e.g. 500M">
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header" style="border-bottom-color:var(--yellow);"><i class="fa-solid fa-cloud-arrow-down" style="color:var(--yellow);"></i> Automation & Configs</div>
+            
+            <div class="form-group">
+                <label>Run Crontab</label>
+                <div class="select-wrapper">
+                    <select name="run_crontab" id="run_crontab">
+                        <option value="true">TRUE</option>
+                        <option value="false">FALSE</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Update Geo</label>
+                <div class="select-wrapper">
+                    <select name="update_geo" id="update_geo">
+                        <option value="true">TRUE</option>
+                        <option value="false">FALSE</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Renew</label>
+                <div class="select-wrapper">
+                    <select name="renew" id="renew">
+                        <option value="true">TRUE</option>
+                        <option value="false">FALSE</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Update Subscription</label>
+                <div class="select-wrapper">
+                    <select name="update_subscription" id="update_subscription">
+                        <option value="true">TRUE</option>
+                        <option value="false">FALSE</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>TProxy Port</label>
+                <input type="text" name="tproxy_port" id="tproxy_port" placeholder="e.g. 9898">
+            </div>
+            <div class="form-group">
+                <label>Redir Port</label>
+                <input type="text" name="redir_port" id="redir_port" placeholder="e.g. 9797">
+            </div>
+            <div class="form-group">
+                <label>Subscription URL Clash</label>
+                <input type="text" name="subscription_url_clash" id="subscription_url_clash" placeholder="https://...">
+            </div>
+            <div class="form-group">
+                <label>Name Clash Config</label>
+                <input type="text" name="name_clash_config" id="name_clash_config" placeholder="config.yaml">
+            </div>
+            <div class="form-group">
+                <label>Name Sing Config</label>
+                <input type="text" name="name_sing_config" id="name_sing_config" placeholder="config.json">
+            </div>
+        </div>
+
+        <div class="save-container">
+            <button type="submit" class="btn-save" id="btnSave">
+                <i class="fa-solid fa-floppy-disk"></i> Simpan Setelan
+            </button>
+        </div>
+    </form>
+
+    <!-- REUSABLE MODAL -->
+    <div class="custom-modal" id="actionModal">
+        <div class="modal-card">
+            <div class="modal-title" id="actionModalTitle">Action</div>
+            <div class="modal-body" id="actionModalBody">Body content</div>
+            <div class="modal-actions" id="actionModalActions"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+function showModal(title, bodyHTML, buttonsHTML, titleBg = 'var(--cyan)') {
+    const titleEl = document.getElementById('actionModalTitle');
+    titleEl.innerHTML = title;
+    titleEl.style.background = titleBg;
+    titleEl.style.color = '#000';
+    document.getElementById('actionModalBody').innerHTML = bodyHTML;
+    document.getElementById('actionModalActions').innerHTML = buttonsHTML;
+    document.getElementById('actionModal').classList.add('show');
+}
+function closeModal() { document.getElementById('actionModal').classList.remove('show'); }
+
+// Load Settings
+function loadSettings() {
+    fetch('/api/bfr/settings')
+    .then(r => r.json())
+    .then(data => {
+        if(data.status === 'success') {
+            const s = data.settings;
+            // Populate form
+            for(let key in s) {
+                const el = document.getElementById(key);
+                if(el) {
+                    el.value = s[key];
+                }
+            }
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('settingsForm').style.display = 'block';
+        } else {
+            document.getElementById('loading').innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${data.message || 'Error loaded settings'}`;
+        }
+    })
+    .catch(err => {
+        document.getElementById('loading').innerHTML = `<i class="fa-solid fa-wifi"></i> Gagal terhubung ke server`;
+    });
+}
+
+function saveSettings(e) {
+    e.preventDefault();
+    const btn = document.getElementById('btnSave');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Menyimpan...';
+    
+    // Kumpulkan data
+    const formData = new FormData(document.getElementById('settingsForm'));
+    const payload = {};
+    formData.forEach((val, key) => { payload[key] = val; });
+
+    fetch('/api/bfr/settings', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload)
+    })
+    .then(r => r.json())
+    .then(res => {
+        if(res.status === 'success') {
+            showModal('<i class="fa-solid fa-circle-check"></i> Sukses', 'Setelan BFR berhasil disimpan!', `<button class="btn-modal" onclick="closeModal()" style="background:var(--cyan);color:#000;">OK</button>`, 'var(--cyan)');
+        } else {
+            showModal('<i class="fa-solid fa-triangle-exclamation"></i> Gagal', res.message || 'Gagal menyimpan', `<button class="btn-modal" onclick="closeModal()" style="background:var(--pink);color:#fff;">OK</button>`, 'var(--pink)');
+        }
+    })
+    .catch(err => {
+        showModal('<i class="fa-solid fa-wifi"></i> Error', 'Koneksi terputus', `<button class="btn-modal" onclick="closeModal()" style="background:var(--pink);color:#fff;">OK</button>`, 'var(--pink)');
+    })
+    .finally(() => {
+        btn.innerHTML = originalText;
+    });
+}
+
+function syncTheme(){
+    try{
+        const parentHtml = window.parent?.document?.documentElement;
+        if(parentHtml) {
+            const theme = parentHtml.getAttribute('data-theme');
+            if(theme && theme !== 'dark') document.documentElement.setAttribute('data-theme', theme);
+            else document.documentElement.removeAttribute('data-theme');
+            
+            const color = parentHtml.getAttribute('data-color');
+            if(color && color !== 'default') document.documentElement.setAttribute('data-color', color);
+            else document.documentElement.removeAttribute('data-color');
+        }
+    }catch(e){}
+}
+syncTheme();
+loadSettings();
+setInterval(syncTheme, 1000);
+</script>
+</body>
+</html>

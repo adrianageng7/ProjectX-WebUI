@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Traffic Monitor</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+<script src="assets/chart.umd.min.js"></script>
+<style>
+:root {
+    /* === DARK MODE (DEFAULT) === */
+    --bg: #18151e;
+    --paper: #24202b;
+    --ink: #fffaf4;
+    --muted: #aaa2ad;
+    --line: #0d0b10;
+    --shadow: 4px 5px 0 #08070a;
+    --panel-alt: #302b38;
+    
+    /* === DEFAULT COLOR ACCENT: RETRO POP === */
+    --pink: #ff5ca8;
+    --yellow: #ffe14a;
+    --cyan: #55dfff;
+    --lime: #b8f34a;
+    --purple: #9b7cff;
+    --orange: #ff9955;
+    
+    --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    
+    /* MAP ALIASES */
+    --border-width: 2px;
+    --border-color: var(--line);
+    --bg-body: transparent;
+    --panel-bg: var(--paper);
+    --panel-bg-alt: var(--panel-alt);
+    --text: var(--ink);
+    --text-muted: var(--muted);
+    
+    --primary: var(--yellow);
+    --primary-text: #000000;
+    --secondary: var(--pink);
+    --accent: var(--cyan);
+    
+    --brutal-shadow: var(--shadow);
+    --brutal-shadow-sm: 3px 3px 0px var(--line);
+}
+
+/* === LIGHT MODE === */
+:root[data-theme="light"] {
+    --bg: #fff6e8;
+    --paper: #fffdf8;
+    --ink: #17151a;
+    --muted: #77717a;
+    --line: #17151a;
+    --shadow: 4px 5px 0 #17151a;
+    --panel-alt: #e8e5da;
+}
+
+/* ===== COLOR SCHEMES ===== */
+/* SYNTHWAVE: Neon Magenta + Electric Cyan */
+:root[data-color="synthwave"] {
+    --pink: #ff2d95;
+    --yellow: #ff2d95;
+    --cyan: #00e5ff;
+    --lime: #ff2d95;
+    --purple: #c538ff;
+    --orange: #ff6b35;
+    --primary-text: #ffffff;
+}
+:root[data-color="synthwave"][data-theme="dark"],
+:root[data-color="synthwave"]:not([data-theme]) {
+    --panel-alt: #2a1035;
+}
+
+/* TOXIC: Acid Green + Cyber Orange */
+:root[data-color="toxic"] {
+    --pink: #ff4444;
+    --yellow: #39ff14;
+    --cyan: #39ff14;
+    --lime: #39ff14;
+    --purple: #ff8800;
+    --orange: #ff6600;
+    --primary-text: #000000;
+}
+:root[data-color="toxic"][data-theme="dark"],
+:root[data-color="toxic"]:not([data-theme]) {
+    --panel-alt: #1a2810;
+}
+
+/* ARCTIC: Ice Blue + Frost */
+:root[data-color="arctic"] {
+    --pink: #64b5f6;
+    --yellow: #40c4ff;
+    --cyan: #80d8ff;
+    --lime: #82b1ff;
+    --purple: #448aff;
+    --orange: #29b6f6;
+    --primary-text: #000000;
+}
+:root[data-color="arctic"][data-theme="dark"],
+:root[data-color="arctic"]:not([data-theme]) {
+    --panel-alt: #1a2535;
+}
+
+/* SUNSET: Warm Orange + Deep Coral */
+:root[data-color="sunset"] {
+    --pink: #ff1744;
+    --yellow: #ff6d00;
+    --cyan: #ffab40;
+    --lime: #ff9100;
+    --purple: #ff5252;
+    --orange: #ff3d00;
+    --primary-text: #000000;
+}
+:root[data-color="sunset"][data-theme="dark"],
+:root[data-color="sunset"]:not([data-theme]) {
+    --panel-alt: #351a10;
+}
+
+/* LAVENDER: Soft Purple + Rose */
+:root[data-color="lavender"] {
+    --pink: #f48fb1;
+    --yellow: #b388ff;
+    --cyan: #ea80fc;
+    --lime: #ce93d8;
+    --purple: #7c4dff;
+    --orange: #e040fb;
+    --primary-text: #000000;
+}
+:root[data-color="lavender"][data-theme="dark"],
+:root[data-color="lavender"]:not([data-theme]) {
+    --panel-alt: #271a35;
+}
+
+* { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
+body { margin: 0; background: var(--bg-body); color: var(--text); font-family: var(--font); padding: 18px; transition: background-color 0.2s ease, color 0.2s ease;}
+.wrap { max-width: 1080px; margin: 0 auto; }
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+.brand h1 { margin: 0; font-size: 24px; font-weight: 900; text-transform: uppercase; letter-spacing: -1px; }
+.small { font-size: 11px; color: var(--text-muted); font-weight: 800; display: flex; align-items: center; gap: 8px; margin-top:4px; text-transform: uppercase;}
+.controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.btn, select { background: var(--panel-bg-alt); color: var(--text); padding: 10px 14px; border-radius: 10px; border: var(--border-width) solid var(--border-color); cursor: pointer; font-size: 13px; font-weight: 800; box-shadow: var(--brutal-shadow-sm); transition: all 0.1s ease; font-family: var(--font); }
+.btn:hover, select:hover { background: var(--primary); color: var(--primary-text); transform: translate(-2px, -2px); box-shadow: var(--brutal-shadow); }
+.btn:active { transform: translate(1px, 1px); box-shadow: none; }
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 16px; }
+@media (max-width: 768px) { .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } .grid > .card:last-child { grid-column: span 2; } }
+.card { background: var(--panel-bg); border: var(--border-width) solid var(--border-color); border-radius: 16px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: var(--brutal-shadow); transition: background-color 0.2s ease; }
+.kpi-label { font-size: 11px; color: var(--text-muted); font-weight: 900; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
+.kpi-val { font-size: 22px; font-weight: 900; margin-top: 4px; color: var(--text); }
+.kpi-sub { font-size: 12px; color: var(--text-muted); margin-top: 6px; font-weight: 800; }
+.kpi-rx { color: var(--cyan); } .kpi-tx { color: var(--primary); }
+.live-speed-box { display: flex; justify-content: space-between; align-items: center; background: var(--panel-bg); border: var(--border-width) solid var(--border-color); border-radius: 16px; padding: 16px 20px; margin-bottom: 24px; box-shadow: var(--brutal-shadow); }
+.speed-item { display: flex; align-items: center; gap: 12px; }
+.speed-icon { font-size: 20px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 10px; border: var(--border-width) solid var(--border-color); box-shadow: var(--brutal-shadow-sm);}
+.speed-icon.down { background: var(--cyan); color: #000; } .speed-icon.up { background: var(--primary); color: #000; }
+.speed-val { font-family: 'JetBrains Mono', monospace; font-weight: 900; font-size: 20px; letter-spacing: -0.5px;}
+.chart-container { position: relative; height: 300px; width: 100%; margin-top: 10px; }
+.bottom-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.info-table { width: 100%; border-collapse: collapse; margin-top: 8px; } 
+.info-table th { font-size: 11px; color: var(--text-muted); padding-bottom: 10px; font-weight: 900; text-transform: uppercase; border-bottom: var(--border-width) solid var(--border-color); text-align: left; }
+.info-table th:not(:first-child) { text-align: right; }
+.info-table td { padding: 12px 0; font-weight: 800; font-size: 13px; border-bottom: 1px solid var(--border-color); color: var(--text); }
+.info-table td:not(:first-child) { text-align: right; }
+.spinner { width: 14px; height: 14px; border: 3px solid var(--text-muted); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; display: none; }
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="header">
+    <div class="brand">
+      <h1>Traffic Monitor</h1>
+      <div class="small">Real-time Statistics <div class="spinner" id="loadingIndicator"></div></div>
+    </div>
+    <div class="controls">
+      <!-- Filter Rentang Waktu Grafik -->
+      <select id="timeRangeSelect" onchange="renderChart()">
+          <option value="hourly">24 Jam Terakhir</option>
+          <option value="daily">30 Hari Terakhir</option>
+          <option value="monthly">12 Bulan Terakhir</option>
+      </select>
+
+      <select id="ifaceSelect" onchange="loadData()">
+          <option value="All" selected>Semua Interface (Raw)</option>
+          <option value="Total Klien (Hotspot+USB)">Total Klien (Hotspot+USB)</option>
+      </select>
+      <button class="btn" onclick="loadData()" title="Refresh"><i class="fas fa-sync"></i></button>
+    </div>
+  </div>
+
+  <div class="live-speed-box">
+      <div class="speed-item">
+          <div class="speed-icon down"><i class="fas fa-arrow-down"></i></div>
+          <div><div class="kpi-label" style="margin-bottom: 4px;">Download</div><div class="speed-val" id="liveRx">0 B/s</div></div>
+      </div>
+      <div class="speed-item" style="text-align: right; flex-direction: row-reverse;">
+          <div class="speed-icon up"><i class="fas fa-arrow-up"></i></div>
+          <div><div class="kpi-label" style="margin-bottom: 4px;">Upload</div><div class="speed-val" id="liveTx">0 B/s</div></div>
+      </div>
+  </div>
+
+  <div class="grid">
+      <div class="card">
+          <div class="kpi-label">Hari Ini</div>
+          <div class="kpi-val" id="kpiTodayTotal">0 B</div>
+          <div class="kpi-sub"><i class="fas fa-arrow-down kpi-rx"></i> <span id="kpiTodayRx">0 B</span> &nbsp;<i class="fas fa-arrow-up kpi-tx"></i> <span id="kpiTodayTx">0 B</span></div>
+      </div>
+      <div class="card">
+          <div class="kpi-label">Kemarin</div>
+          <div class="kpi-val" id="kpiYestTotal">0 B</div>
+          <div class="kpi-sub"><i class="fas fa-arrow-down kpi-rx"></i> <span id="kpiYestRx">0 B</span> &nbsp;<i class="fas fa-arrow-up kpi-tx"></i> <span id="kpiYestTx">0 B</span></div>
+      </div>
+      <div class="card">
+          <div class="kpi-label">Bulan Ini</div>
+          <div class="kpi-val" id="kpiMonthTotal">0 B</div>
+          <div class="kpi-sub"><i class="fas fa-arrow-down kpi-rx"></i> <span id="kpiMonthRx">0 B</span> &nbsp;<i class="fas fa-arrow-up kpi-tx"></i> <span id="kpiMonthTx">0 B</span></div>
+      </div>
+  </div>
+
+  <div class="card" style="margin-bottom: 16px;">
+      <div class="kpi-label" style="margin-bottom: 10px;" id="chartTitle">Grafik Trafik - 24 Jam Terakhir</div>
+      <div class="chart-container"><canvas id="trafficChart"></canvas></div>
+  </div>
+
+  <div class="bottom-grid">
+      <div class="card">
+          <div class="kpi-label">Statistik Harian (30 Hari)</div>
+          <div style="overflow-x: auto;">
+              <table class="info-table" id="dailyTable">
+                  <thead><tr><th>Tanggal</th><th>Download</th><th>Upload</th><th>Total</th></tr></thead>
+                  <tbody></tbody>
+              </table>
+          </div>
+      </div>
+      <div class="card">
+          <div class="kpi-label">Statistik Bulanan</div>
+          <div style="overflow-x: auto;">
+              <table class="info-table" id="monthlyTable">
+                  <thead><tr><th>Bulan</th><th>Download</th><th>Upload</th><th>Total</th></tr></thead>
+                  <tbody></tbody>
+              </table>
+          </div>
+      </div>
+  </div>
+</div>
+
+<script>
+// Fungsi Sync Theme dengan Parent Iframe
+function getCssVar(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
+function syncTheme(){
+    try{
+        const parentHtml = window.parent?.document?.documentElement;
+        let changed = false;
+        
+        const theme = parentHtml?.getAttribute('data-theme') || localStorage.getItem('brutalist_mode') || localStorage.getItem('brutalist_theme');
+        if(theme && theme !== 'dark') { 
+            if (document.documentElement.getAttribute('data-theme') !== theme) {
+                document.documentElement.setAttribute('data-theme', theme);
+                changed = true;
+            }
+        } else {
+            if (document.documentElement.hasAttribute('data-theme')) {
+                document.documentElement.removeAttribute('data-theme');
+                changed = true;
+            }
+        }
+        
+        const color = parentHtml?.getAttribute('data-color') || localStorage.getItem('brutalist_color');
+        if(color && color !== 'default') {
+            if (document.documentElement.getAttribute('data-color') !== color) {
+                document.documentElement.setAttribute('data-color', color);
+                changed = true;
+            }
+        } else {
+            if (document.documentElement.hasAttribute('data-color')) {
+                document.documentElement.removeAttribute('data-color');
+                changed = true;
+            }
+        }
+        
+        // Update warna chart kalau tema berubah
+        if (changed && trafficChart) {
+            Chart.defaults.color = getCssVar('--muted');
+            
+            // Konversi hex ke rgba untuk background fill
+            const hexToRgb = (hex) => {
+                let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+                return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : null;
+            };
+            
+            const cyanHex = getCssVar('--cyan') || '#55dfff';
+            const yellowHex = getCssVar('--yellow') || '#ffe14a';
+            
+            const cyanRgb = hexToRgb(cyanHex);
+            const yellowRgb = hexToRgb(yellowHex);
+
+            trafficChart.data.datasets[0].borderColor = cyanHex;
+            trafficChart.data.datasets[0].backgroundColor = cyanRgb ? `rgba(${cyanRgb}, 0.1)` : 'rgba(0, 255, 204, 0.1)';
+            
+            trafficChart.data.datasets[1].borderColor = yellowHex;
+            trafficChart.data.datasets[1].backgroundColor = yellowRgb ? `rgba(${yellowRgb}, 0.1)` : 'rgba(212, 255, 0, 0.1)';
+            
+            trafficChart.update();
+        }
+    }catch(e){}
+}
+syncTheme();
+setInterval(syncTheme, 1000);
+
+const formatBytes = (bytes, decimals = 2) => {
+    if (!+bytes) return '0 B';
+    const k = 1024, dm = decimals < 0 ? 0 : decimals, sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+};
+
+if (typeof Chart !== 'undefined') {
+    Chart.defaults.color = getCssVar('--muted') || '#8f9bb3';
+    Chart.defaults.font.family = 'system-ui, sans-serif';
+}
+
+let trafficChart = null;
+let currentDashboardData = null; 
+
+const initChart = () => {
+    if (typeof Chart === 'undefined') {
+        console.warn("Chart.js belum siap atau tidak tersedia");
+        return;
+    }
+    const canvas = document.getElementById('trafficChart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    
+    const cyanHex = getCssVar('--cyan') || '#55dfff';
+    const yellowHex = getCssVar('--yellow') || '#ffe14a';
+    
+    trafficChart = new Chart(ctx, {
+        type: 'line',
+        data: { labels: [], datasets: [
+            { label: 'Download', data: [], borderColor: cyanHex, backgroundColor: 'rgba(85, 223, 255, 0.1)', borderWidth: 2, fill: true, tension: 0.4, pointRadius: 0, pointHitRadius: 10 },
+            { label: 'Upload', data: [], borderColor: yellowHex, backgroundColor: 'rgba(255, 225, 74, 0.1)', borderWidth: 2, fill: true, tension: 0.4, pointRadius: 0, pointHitRadius: 10 }
+        ]},
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                legend: { display: false },
+                tooltip: { backgroundColor: '#161824', titleColor: '#fff', bodyColor: '#8f9bb3', borderColor: '#000', borderWidth: 2, padding: 10, cornerRadius: 8, callbacks: { label: (ctx) => `${ctx.dataset.label}: ${formatBytes(ctx.raw)}` } }
+            },
+            scales: {
+                x: { grid: { display: false, drawBorder: false }, ticks: { maxTicksLimit: 12 } },
+                y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { callback: (val) => formatBytes(val, 0) } }
+            }
+        }
+    });
+    
+    setTimeout(syncTheme, 100);
+};
+
+const renderChart = () => {
+    if (!currentDashboardData || !trafficChart) return;
+    
+    const range = document.getElementById('timeRangeSelect').value;
+    const titleEl = document.getElementById('chartTitle');
+    let labels = [], rxData = [], txData = [];
+
+    if (range === 'hourly') {
+        titleEl.innerText = "Grafik Trafik - 24 Jam Terakhir";
+        labels = (currentDashboardData.usage?.hour || []).map(h => {
+            let dt = new Date(h.time);
+            return dt.getHours().toString().padStart(2, '0') + ':00';
+        });
+        rxData = (currentDashboardData.usage?.hour || []).map(h => h.rx || 0);
+        txData = (currentDashboardData.usage?.hour || []).map(h => h.tx || 0);
+    } 
+    else if (range === 'daily') {
+        titleEl.innerText = "Grafik Trafik - 30 Hari Terakhir";
+        const dailyReversed = [...(currentDashboardData.tables?.daily || [])].reverse();
+        labels = dailyReversed.map(d => {
+            let parts = (d.date || '').split('-');
+            return parts.length >= 3 ? `${parts[2]}/${parts[1]}` : (d.date || '-');
+        });
+        rxData = dailyReversed.map(d => d.rx || 0);
+        txData = dailyReversed.map(d => d.tx || 0);
+    } 
+    else if (range === 'monthly') {
+        titleEl.innerText = "Grafik Trafik - 12 Bulan Terakhir";
+        const monthlyReversed = [...(currentDashboardData.tables?.monthly || [])].reverse();
+        labels = monthlyReversed.map(m => m.month || '-');
+        rxData = monthlyReversed.map(m => m.rx || 0);
+        txData = monthlyReversed.map(m => m.tx || 0);
+    }
+
+    trafficChart.data.labels = labels;
+    trafficChart.data.datasets[0].data = rxData;
+    trafficChart.data.datasets[1].data = txData;
+    trafficChart.update();
+};
+
+let isFirstLoad = true;
+const loadData = async () => {
+    const spinner = document.getElementById('loadingIndicator');
+    if (spinner) spinner.style.display = 'block';
+    
+    const ifaceSelect = document.getElementById('ifaceSelect');
+    const iface = ifaceSelect ? ifaceSelect.value : 'All';
+    try {
+        const res = await fetch(`/api/vnstat?json=1&iface=${encodeURIComponent(iface)}&_=${Date.now()}`);
+        const data = await res.json();
+        currentDashboardData = data; 
+        
+        if (isFirstLoad && data.meta?.ifaces) {
+            const currentVal = ifaceSelect.value;
+            ifaceSelect.innerHTML = '';
+            data.meta.ifaces.forEach(i => {
+                const opt = document.createElement('option');
+                opt.value = i; opt.innerText = i === 'All' ? 'Semua Interface (Raw)' : i;
+                if(i === currentVal) opt.selected = true;
+                ifaceSelect.appendChild(opt);
+            });
+            isFirstLoad = false;
+        }
+
+        const d = data.kpi || { today: {rx: 0, tx: 0}, yesterday: {rx: 0, tx: 0}, month: {rx: 0, tx: 0} };
+        const tRx = d.today?.rx || 0, tTx = d.today?.tx || 0;
+        const yRx = d.yesterday?.rx || 0, yTx = d.yesterday?.tx || 0;
+        const mRx = d.month?.rx || 0, mTx = d.month?.tx || 0;
+
+        document.getElementById('kpiTodayTotal').innerText = formatBytes(tRx + tTx);
+        document.getElementById('kpiTodayRx').innerText = formatBytes(tRx);
+        document.getElementById('kpiTodayTx').innerText = formatBytes(tTx);
+        document.getElementById('kpiYestTotal').innerText = formatBytes(yRx + yTx);
+        document.getElementById('kpiYestRx').innerText = formatBytes(yRx);
+        document.getElementById('kpiYestTx').innerText = formatBytes(yTx);
+        document.getElementById('kpiMonthTotal').innerText = formatBytes(mRx + mTx);
+        document.getElementById('kpiMonthRx').innerText = formatBytes(mRx);
+        document.getElementById('kpiMonthTx').innerText = formatBytes(mTx);
+
+        renderChart();
+
+        const buildTable = (tbodyId, rows, dateKey) => {
+            const tbody = document.querySelector(`#${tbodyId} tbody`);
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            (rows || []).forEach(r => {
+                let tr = document.createElement('tr');
+                tr.innerHTML = `<td>${r[dateKey] || '-'}</td><td>${formatBytes(r.rx || 0)}</td><td>${formatBytes(r.tx || 0)}</td><td>${formatBytes(r.total || 0)}</td>`;
+                tbody.appendChild(tr);
+            });
+        };
+        buildTable('dailyTable', data.tables?.daily, 'date');
+        buildTable('monthlyTable', data.tables?.monthly, 'month');
+
+    } catch (e) { console.error("Gagal load data vnstat:", e); } 
+    finally { if (spinner) spinner.style.display = 'none'; }
+};
+
+let lastStats = {}, lastTime = 0;
+const updateLiveSpeed = async () => {
+    try {
+        const res = await fetch(`/api/vnstat?ajax_speed=1&_=${Date.now()}`);
+        const data = await res.json();
+        if (!data || !data.interfaces) return;
+
+        const iface = document.getElementById('ifaceSelect')?.value || 'All';
+        const targetIface = data.interfaces[iface] || data.interfaces['Total Klien (Hotspot+USB)'] || null;
+        let rxSpeed = 0, txSpeed = 0;
+
+        if (iface === 'All') {
+            if (lastTime > 0) {
+                const dt = data.time - lastTime;
+                if (dt > 0) {
+                    let totalDrx = 0, totalDtx = 0;
+                    Object.keys(data.interfaces).forEach(key => {
+                        if(key !== 'Total Klien (Hotspot+USB)' && lastStats[key]) {
+                            totalDrx += Math.max(0, data.interfaces[key].rx - lastStats[key].rx);
+                            totalDtx += Math.max(0, data.interfaces[key].tx - lastStats[key].tx);
+                        }
+                    });
+                    rxSpeed = totalDrx / dt;
+                    txSpeed = totalDtx / dt;
+                }
+            }
+            Object.keys(data.interfaces).forEach(key => {
+                lastStats[key] = { rx: data.interfaces[key].rx, tx: data.interfaces[key].tx };
+            });
+        } else {
+            if (targetIface && lastStats[iface] && lastTime > 0) {
+                const dt = data.time - lastTime;
+                if (dt > 0) {
+                    const drx = targetIface.rx - lastStats[iface].rx;
+                    const dtx = targetIface.tx - lastStats[iface].tx;
+                    if(drx >= 0) rxSpeed = drx / dt;
+                    if(dtx >= 0) txSpeed = dtx / dt;
+                }
+            }
+            if (targetIface) lastStats[iface] = { rx: targetIface.rx, tx: targetIface.tx };
+        }
+        
+        lastTime = data.time;
+
+        const elRx = document.getElementById('liveRx');
+        const elTx = document.getElementById('liveTx');
+        if (elRx) elRx.innerText = formatBytes(rxSpeed) + '/s';
+        if (elTx) elTx.innerText = formatBytes(txSpeed) + '/s';
+    } catch (e) {}
+};
+
+function startAll() {
+    try { initChart(); } catch(e) { console.error("initChart error:", e); }
+    try { loadData(); } catch(e) { console.error("loadData error:", e); }
+    try { updateLiveSpeed(); } catch(e) { console.error("updateLiveSpeed error:", e); }
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', startAll);
+} else {
+    startAll();
+}
+
+setInterval(updateLiveSpeed, 2000);
+setInterval(loadData, 30000);
+</script>
+</body>
+</html>
+
+

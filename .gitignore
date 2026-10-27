@@ -1,0 +1,42 @@
+# Binaries and executables in root
+*.exe
+projectx-go
+projectx_server*
+ProjectX_Magisk.zip
+magisk_module/bin/projectx_*
+
+# Large dump and temporary debug files
+dump.txt
+touch_create.txt
+touch_parse.txt
+touch_parse2.txt
+classes.dex
+bfr.zip
+reference_bfr/
+*.log
+
+# Sensitive credentials & runtime databases
+auth.json
+data/*.db
+data/*.db-shm
+data/*.db-wal
+data/*.json
+
+# Frontend node_modules & build caches
+ui-svelte/node_modules/
+ui-svelte/.svelte-kit/
+ui-svelte/dist/
+ui-svelte/build/
+
+# Scratch & test compiled binaries
+scratch/*_arm*
+scratch/*.exe
+scratch/*.log
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+.idea/
+.vscode/

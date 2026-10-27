@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark light">
+<title>Speedtest Internet — ProjectX</title>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+:root {
+    --bg: #18151e;
+    --paper: #24202b;
+    --ink: #fffaf4;
+    --muted: #aaa2ad;
+    --line: #0d0b10;
+    --shadow: 4px 5px 0 #08070a;
+    --panel-alt: #302b38;
+    
+    --pink: #ff5ca8;
+    --yellow: #ffe14a;
+    --cyan: #55dfff;
+    --lime: #b8f34a;
+    --purple: #9b7cff;
+    --orange: #ff9955;
+    
+    --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+:root[data-theme="light"] {
+    --bg: #fff6e8;
+    --paper: #fffdf8;
+    --ink: #17151a;
+    --muted: #77717a;
+    --line: #17151a;
+    --shadow: 4px 5px 0 #17151a;
+    --panel-alt: #e8e5da;
+}
+
+*{box-sizing:border-box;outline:none}
+body{ margin:0; padding:18px; min-height:100vh; background:var(--bg); color:var(--ink); font-family:var(--font); -webkit-font-smoothing:antialiased; }
+.wrap{max-width:860px;margin:auto;padding-bottom:60px;}
+button{font:inherit}
+
+.header{ display:flex; justify-content:space-between; align-items:flex-start; gap:15px; margin-bottom:18px; flex-wrap:wrap; }
+.eyebrow{ display:inline-flex; align-items:center; gap:6px; padding:5px 9px; border:2px solid var(--line); border-radius:999px; background:var(--lime); box-shadow:3px 3px 0 var(--line); color:#17151a; font-size:9px; font-weight:950; text-transform:uppercase; letter-spacing:.8px; transform:rotate(-1deg); }
+.live-dot{width:6px;height:6px;border-radius:50%;background:#17151a;}
+.active-pulse{animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.brand h1{ margin:8px 0 0; font-size:28px; line-height:1.1; letter-spacing:-1.2px; font-weight:950; text-transform:uppercase; }
+.device-name{ margin-top:6px; color:var(--muted); font-size:12px; font-weight:700; max-width:600px; }
+
+.controls{display:flex;gap:8px}
+.btn{ width:39px;height:36px; border:2px solid var(--line); border-radius:11px; background:var(--paper); color:var(--ink); box-shadow:3px 3px 0 var(--line); display:grid; place-items:center; cursor:pointer; text-decoration:none; transition:.12s; }
+.btn:hover{background:var(--yellow);color:#000;transform:translate(-1px,-2px)}
+
+.card{ background:var(--paper); border:2px solid var(--line); border-radius:14px; color:var(--ink); box-shadow:var(--shadow); padding:16px; margin-bottom:16px; position:relative; }
+
+/* META CARD */
+.meta-card { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; gap: 12px; flex-wrap: wrap; background: var(--panel-alt); }
+.meta-item { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 170px; }
+.meta-item i { font-size: 18px; }
+.meta-content { display: flex; flex-direction: column; gap: 2px; }
+.meta-label { font-size: 10px; font-weight: 900; text-transform: uppercase; color: var(--muted); }
+.meta-val { font-size: 12.5px; font-weight: 800; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.meta-sep { width: 2px; height: 32px; background: var(--line); }
+@media (max-width: 600px) { .meta-sep { display: none; } }
+
+/* HERO SPEEDOMETER CARD */
+.hero-card { display: flex; flex-direction: column; align-items: center; padding: 24px 20px; text-align: center; }
+.hero-top { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.phase-badge { font-size: 11px; font-weight: 900; letter-spacing: 0.5px; text-transform: uppercase; padding: 5px 12px; border-radius: 6px; border: 2px solid var(--line); display: inline-flex; align-items: center; gap: 6px; box-shadow: 2px 2px 0 var(--line); background: var(--panel-alt); color: var(--ink); }
+.progress-num { font-size: 14px; font-weight: 950; color: var(--ink); }
+
+.progress-track { width: 100%; height: 12px; background: var(--panel-alt); border: 2px solid var(--line); border-radius: 10px; overflow: hidden; margin-bottom: 18px; }
+.progress-fill { height: 100%; width: 0%; background: var(--yellow); transition: width 0.15s ease-out; }
+.animated-stripes {
+    background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.25) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.25) 50%, rgba(255, 255, 255, 0.25) 75%, transparent 75%, transparent);
+    background-size: 24px 24px;
+    animation: moveStripes 1s linear infinite;
+}
+@keyframes moveStripes { from { background-position: 0 0; } to { background-position: 24px 0; } }
+
+.speed-display { display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 8px 0 16px 0; }
+.speed-number { font-size: 70px; font-weight: 950; line-height: 1; letter-spacing: -2px; color: var(--ink); font-variant-numeric: tabular-nums; }
+.speed-unit { font-size: 15px; font-weight: 900; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+.speed-unit span { font-size: 13px; font-weight: 800; color: var(--yellow); }
+
+.status-msg { font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 20px; display: flex; align-items: center; gap: 6px; }
+
+/* ACTION BUTTON */
+.action-wrap { width: 100%; max-width: 380px; }
+.btn-main { width: 100%; padding: 14px 24px; font-size: 15px; font-weight: 950; text-transform: uppercase; letter-spacing: 0.5px; border: 2px solid var(--line); border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 4px 4px 0 var(--line); transition: transform 0.1s; }
+.btn-main:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--line); }
+.btn-main:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--line); }
+.btn-start { background: var(--yellow); color: #000; }
+.btn-stop { background: var(--pink); color: #fff; }
+
+/* 4 METRICS */
+.metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px; }
+.metric-card { padding: 14px; display: flex; flex-direction: column; gap: 6px; transition: transform 0.15s, border-color 0.15s; }
+.metric-card.active { border-color: var(--yellow); box-shadow: 3px 3px 0 var(--yellow); transform: translate(-1px, -1px); background: rgba(255, 225, 74, 0.08); }
+.metric-head { font-size: 11px; font-weight: 900; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.metric-body { display: flex; align-items: baseline; gap: 4px; }
+.metric-val { font-size: 28px; font-weight: 950; color: var(--ink); font-variant-numeric: tabular-nums; line-height: 1.1; }
+.metric-unit { font-size: 12px; font-weight: 800; color: var(--muted); }
+.metric-footer { font-size: 10px; font-weight: 700; color: var(--muted); margin-top: 2px; }
+
+/* INSIGHT CARD */
+.insight-card { background: var(--paper); }
+.insight-title { font-size: 13px; font-weight: 900; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.insight-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.insight-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; background: var(--panel-alt); border: 2px solid var(--line); border-radius: 10px; }
+.ii-icon { width: 36px; height: 36px; border-radius: 8px; background: var(--paper); border: 2px solid var(--line); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.ii-name { font-size: 12px; font-weight: 900; color: var(--ink); }
+.ii-desc { font-size: 11px; font-weight: 700; color: var(--muted); margin-top: 2px; }
+.badge-rec { background: var(--lime); color: #000; font-weight: 900; padding: 1px 6px; border-radius: 4px; font-size: 10px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+    <!-- HEADER -->
+    <div class="header">
+        <div class="brand">
+            <div class="eyebrow">
+                <span class="live-dot" id="liveDot"></span>
+                <span>Alat Jaringan & Performa</span>
+            </div>
+            <h1>Speedtest Internet</h1>
+            <div class="device-name">Uji kecepatan unduh, unggah, dan kestabilan latensi koneksi internet / proxy HP secara real-time via Cloudflare Edge.</div>
+        </div>
+        <div class="controls">
+            <a href="/" class="btn" title="Kembali ke Dashboard"><i class="fa-solid fa-house"></i></a>
+            <button class="btn" onclick="toggleTheme()" title="Ubah Tema"><i class="fa-solid fa-moon" id="themeIcon"></i></button>
+        </div>
+    </div>
+
+    <!-- META STRIP -->
+    <div class="card meta-card">
+        <div class="meta-item">
+            <i class="fa-solid fa-network-wired" style="color:var(--cyan);"></i>
+            <div class="meta-content">
+                <div class="meta-label">IP Publik</div>
+                <div class="meta-val" id="valIP">-</div>
+            </div>
+        </div>
+        <div class="meta-sep"></div>
+        <div class="meta-item">
+            <i class="fa-solid fa-tower-broadcast" style="color:var(--lime);"></i>
+            <div class="meta-content">
+                <div class="meta-label">Penyedia / ISP</div>
+                <div class="meta-val" id="valISP">-</div>
+            </div>
+        </div>
+        <div class="meta-sep"></div>
+        <div class="meta-item">
+            <i class="fa-solid fa-server" style="color:var(--yellow);"></i>
+            <div class="meta-content">
+                <div class="meta-label">Server & Lokasi</div>
+                <div class="meta-val" id="valServer">Mendeteksi...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN SPEEDOMETER HERO CARD -->
+    <div class="card hero-card">
+        <div class="hero-top">
+            <span class="phase-badge" id="phaseBadge">
+                <i class="fa-solid fa-circle-notch" id="phaseIcon"></i>
+                <span id="phaseText">SIAP UNTUK PENGUJIAN</span>
+            </span>
+            <span class="progress-num" id="progressNum">0%</span>
+        </div>
+
+        <!-- PROGRESS BAR -->
+        <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <!-- BIG LIVE SPEED NUMBER -->
+        <div class="speed-display">
+            <div class="speed-number" id="speedNumber">0.0</div>
+            <div class="speed-unit" id="speedUnit">Mbps</div>
+        </div>
+
+        <div class="status-msg" id="statusMsg">
+            <i class="fa-solid fa-circle-info"></i> <span id="statusText">Tekan tombol di bawah untuk memulai pengujian.</span>
+        </div>
+
+        <!-- ACTION BUTTON -->
+        <div class="action-wrap">
+            <button class="btn-main btn-start" id="btnAction" onclick="handleActionButton()">
+                <i class="fa-solid fa-bolt-lightning" id="btnIcon"></i>
+                <span id="btnText">Mulai Uji Kecepatan</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 4 METRIC CARDS -->
+    <div class="metrics-grid">
+        <!-- PING -->
+        <div class="card metric-card" id="cardPing">
+            <div class="metric-head">
+                <i class="fa-solid fa-bolt" style="color:var(--lime);"></i>
+                <span>Latensi (Ping)</span>
+            </div>
+            <div class="metric-body">
+                <div class="metric-val" id="valPing">-</div>
+                <div class="metric-unit">ms</div>
+            </div>
+            <div class="metric-footer">Koneksi awal ke server</div>
+        </div>
+
+        <!-- JITTER -->
+        <div class="card metric-card" id="cardJitter">
+            <div class="metric-head">
+                <i class="fa-solid fa-water" style="color:var(--yellow);"></i>
+                <span>Jitter</span>
+            </div>
+            <div class="metric-body">
+                <div class="metric-val" id="valJitter">-</div>
+                <div class="metric-unit">ms</div>
+            </div>
+            <div class="metric-footer">Stabilitas delay paket</div>
+        </div>
+
+        <!-- DOWNLOAD -->
+        <div class="card metric-card" id="cardDownload">
+            <div class="metric-head">
+                <i class="fa-solid fa-cloud-arrow-down" style="color:var(--cyan);"></i>
+                <span>Kecepatan Unduh</span>
+            </div>
+            <div class="metric-body">
+                <div class="metric-val" id="valDownload">-</div>
+                <div class="metric-unit">Mbps</div>
+            </div>
+            <div class="metric-footer">Download transfer rate</div>
+        </div>
+
+        <!-- UPLOAD -->
+        <div class="card metric-card" id="cardUpload">
+            <div class="metric-head">
+                <i class="fa-solid fa-cloud-arrow-up" style="color:var(--pink);"></i>
+                <span>Kecepatan Unggah</span>
+            </div>
+            <div class="metric-body">
+                <div class="metric-val" id="valUpload">-</div>
+                <div class="metric-unit">Mbps</div>
+            </div>
+            <div class="metric-footer">Upload transfer rate</div>
+        </div>
+    </div>
+
+    <!-- EVALUATION / INSIGHTS CARD -->
+    <div class="card insight-card" id="cardInsights" style="display: none;">
+        <div class="insight-title">
+            <i class="fa-solid fa-chart-simple" style="color:var(--lime);"></i>
+            <span>Ringkasan Kemampuan Jaringan</span>
+        </div>
+        <div class="insight-grid">
+            <div class="insight-item">
+                <div class="ii-icon"><i class="fa-solid fa-gamepad" style="color:var(--lime);"></i></div>
+                <div class="ii-text">
+                    <div class="ii-name">Game Online (ML, PUBG, FF)</div>
+                    <div class="ii-desc">Ping <strong id="inPing">0 ms</strong> &bull; Status: <span class="badge-rec" id="inGamingStatus">Bagus</span></div>
+                </div>
+            </div>
+            <div class="insight-item">
+                <div class="ii-icon"><i class="fa-solid fa-video" style="color:var(--cyan);"></i></div>
+                <div class="ii-text">
+                    <div class="ii-name">Streaming Video & Film</div>
+                    <div class="ii-desc">Kapasitas: <span class="badge-rec" id="inStreamStatus">HD 1080p</span></div>
+                </div>
+            </div>
+            <div class="insight-item">
+                <div class="ii-icon"><i class="fa-solid fa-phone-volume" style="color:var(--yellow);"></i></div>
+                <div class="ii-text">
+                    <div class="ii-name">Video Call & Meeting</div>
+                    <div class="ii-desc">Jitter <strong id="inJitter">0 ms</strong> &bull; Bebas putus-putus</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let isRunning = false;
+let eventSource = null;
+let currentPhase = 'idle';
+
+function toggleTheme() {
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    const newTheme = isLight ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    document.getElementById('themeIcon').className = newTheme === 'light' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+}
+
+if (localStorage.getItem('theme') === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+    const tIcon = document.getElementById('themeIcon');
+    if (tIcon) tIcon.className = 'fa-solid fa-sun';
+}
+
+async function loadLastResult() {
+    try {
+        const res = await fetch('/api/speedtest/last?_=' + Date.now());
+        if (res.ok) {
+            const data = await res.json();
+            if (data.status === 'success' && data.data) {
+                const r = data.data;
+                document.getElementById('valPing').textContent = (r.ping || 0).toFixed(1);
+                document.getElementById('valJitter').textContent = (r.jitter || 0).toFixed(1);
+                document.getElementById('valDownload').textContent = (r.download || 0).toFixed(2);
+                document.getElementById('valUpload').textContent = (r.upload || 0).toFixed(2);
+                document.getElementById('valIP').textContent = r.ip || '-';
+                document.getElementById('valISP').textContent = r.isp || '-';
+                document.getElementById('valServer').textContent = `${r.colo || '-'} (${r.city || '-'}, ${r.country || '-'})`;
+                document.getElementById('speedNumber').textContent = (r.download || 0).toFixed(1);
+                updateInsights(r.ping, r.jitter, r.download);
+            }
+        }
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+function handleActionButton() {
+    if (isRunning) {
+        stopSpeedtest();
+    } else {
+        startSpeedtest();
+    }
+}
+
+function startSpeedtest() {
+    if (isRunning) return;
+    isRunning = true;
+    currentPhase = 'init';
+
+    const btn = document.getElementById('btnAction');
+    btn.className = 'btn-main btn-stop';
+    document.getElementById('btnIcon').className = 'fa-solid fa-hand';
+    document.getElementById('btnText').textContent = 'Hentikan Pengujian';
+    document.getElementById('liveDot').classList.add('active-pulse');
+    document.getElementById('progressFill').classList.add('animated-stripes');
+    document.getElementById('cardInsights').style.display = 'none';
+
+    // Reset values
+    document.getElementById('valPing').textContent = '-';
+    document.getElementById('valJitter').textContent = '-';
+    document.getElementById('valDownload').textContent = '-';
+    document.getElementById('valUpload').textContent = '-';
+    document.getElementById('speedNumber').textContent = '0.0';
+    document.getElementById('progressNum').textContent = '2%';
+    document.getElementById('progressFill').style.width = '2%';
+    document.getElementById('phaseText').textContent = 'MENYIAPKAN PENGUJIAN...';
+    document.getElementById('statusText').textContent = 'Menghubungkan ke server Cloudflare Edge...';
+
+    if (eventSource) eventSource.close();
+    eventSource = new EventSource('/api/speedtest/stream');
+
+    eventSource.onmessage = (e) => {
+        try {
+            const data = JSON.parse(e.data);
+            const p = data.phase || currentPhase;
+            currentPhase = p;
+
+            if (data.progress !== undefined) {
+                document.getElementById('progressNum').textContent = data.progress + '%';
+                document.getElementById('progressFill').style.width = data.progress + '%';
+            }
+
+            if (data.ip) document.getElementById('valIP').textContent = data.ip;
+            if (data.isp) document.getElementById('valISP').textContent = data.isp;
+            if (data.colo || data.city) {
+                document.getElementById('valServer').textContent = `${data.colo || '-'} (${data.city || '-'}, ${data.country || '-'})`;
+            }
+
+            if (data.ping !== undefined && data.ping > 0) document.getElementById('valPing').textContent = data.ping.toFixed(1);
+            if (data.jitter !== undefined && data.jitter > 0) document.getElementById('valJitter').textContent = data.jitter.toFixed(1);
+            if (data.download !== undefined && data.download > 0) document.getElementById('valDownload').textContent = data.download.toFixed(2);
+            if (data.upload !== undefined && data.upload > 0) document.getElementById('valUpload').textContent = data.upload.toFixed(2);
+
+            // Highlight active metric card
+            document.querySelectorAll('.metric-card').forEach(c => c.classList.remove('active'));
+            if (p === 'ping') {
+                document.getElementById('cardPing').classList.add('active');
+                document.getElementById('cardJitter').classList.add('active');
+                document.getElementById('phaseText').textContent = 'MENGUKUR LATENSI & JITTER...';
+                document.getElementById('speedNumber').textContent = (data.ping || 0).toFixed(0);
+                document.getElementById('speedUnit').innerHTML = 'ms <span>(Latensi)</span>';
+            } else if (p === 'download') {
+                document.getElementById('cardDownload').classList.add('active');
+                document.getElementById('phaseText').textContent = 'MENGUJI KECEPATAN UNDUH...';
+                document.getElementById('speedNumber').textContent = (data.current_speed || data.speed || 0).toFixed(1);
+                document.getElementById('speedUnit').innerHTML = 'Mbps <span>(Unduh)</span>';
+            } else if (p === 'upload') {
+                document.getElementById('cardUpload').classList.add('active');
+                document.getElementById('phaseText').textContent = 'MENGUJI KECEPATAN UNGGAH...';
+                document.getElementById('speedNumber').textContent = (data.current_speed || data.speed || 0).toFixed(1);
+                document.getElementById('speedUnit').innerHTML = 'Mbps <span>(Unggah)</span>';
+            } else if (p === 'complete') {
+                finishSpeedtest(data);
+            } else if (p === 'stopped' || p === 'error') {
+                stopLocalTest(data.message || 'Pengujian dihentikan');
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    eventSource.onerror = () => {
+        if (isRunning && currentPhase !== 'complete') {
+            stopLocalTest('Koneksi terputus dari server.');
+        }
+    };
+}
+
+function updateInsights(ping, jitter, download) {
+    document.getElementById('cardInsights').style.display = 'block';
+    document.getElementById('inPing').textContent = (ping || 0).toFixed(0) + ' ms';
+    document.getElementById('inJitter').textContent = (jitter || 0).toFixed(1) + ' ms';
+    const game = ping <= 45 ? 'Sangat Bagus' : (ping <= 90 ? 'Cukup Baik' : 'Tinggi');
+    const stream = download >= 25 ? '4K Ultra HD' : (download >= 10 ? 'Full HD 1080p' : 'HD 720p');
+    document.getElementById('inGamingStatus').textContent = game;
+    document.getElementById('inStreamStatus').textContent = stream;
+}
+
+function finishSpeedtest(data) {
+    isRunning = false;
+    if (eventSource) { eventSource.close(); eventSource = null; }
+    document.getElementById('liveDot').classList.remove('active-pulse');
+    document.getElementById('progressFill').classList.remove('animated-stripes');
+    document.getElementById('progressNum').textContent = '100%';
+    document.getElementById('progressFill').style.width = '100%';
+    document.getElementById('phaseText').textContent = 'PENGUJIAN SELESAI';
+    document.getElementById('statusText').textContent = 'Pengujian kecepatan selesai dengan sukses!';
+
+    const btn = document.getElementById('btnAction');
+    btn.className = 'btn-main btn-start';
+    document.getElementById('btnIcon').className = 'fa-solid fa-rotate-right';
+    document.getElementById('btnText').textContent = 'Uji Ulang Kecepatan';
+    document.getElementById('speedNumber').textContent = (data.download || 0).toFixed(1);
+    document.getElementById('speedUnit').innerHTML = 'Mbps <span>(Unduh Maksimal)</span>';
+
+    updateInsights(data.ping, data.jitter, data.download);
+}
+
+async function stopSpeedtest() {
+    try {
+        await fetch('/api/speedtest/stop', { method: 'POST' });
+    } catch(e) {}
+    stopLocalTest('Pengujian dihentikan oleh pengguna.');
+}
+
+function stopLocalTest(msg) {
+    isRunning = false;
+    if (eventSource) { eventSource.close(); eventSource = null; }
+    document.getElementById('liveDot').classList.remove('active-pulse');
+    document.getElementById('progressFill').classList.remove('animated-stripes');
+    document.getElementById('phaseText').textContent = 'PENGUJIAN DIBATALKAN';
+    document.getElementById('statusText').textContent = msg;
+
+    const btn = document.getElementById('btnAction');
+    btn.className = 'btn-main btn-start';
+    document.getElementById('btnIcon').className = 'fa-solid fa-bolt-lightning';
+    document.getElementById('btnText').textContent = 'Mulai Uji Kecepatan';
+}
+
+loadLastResult();
+</script>
+</body>
+</html>

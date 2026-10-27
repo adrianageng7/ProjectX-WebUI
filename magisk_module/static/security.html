@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Security Settings</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+/* ========== VARIABLES & RESET ========== */
+:root {
+    --bg: #18151e; --panel: #24202b; --panel-alt: #302b38;
+    --ink: #fffaf4; --muted: #aaa2ad; --line: #0d0b10;
+    --primary: #c538ff; --secondary: #00e5ff;
+    --pink: #ff5ca8; --cyan: #55dfff; --yellow: #ffe14a; 
+    --lime: #b8f34a; --orange: #ff9955; --purple: #9b7cff;
+    --shadow: 4px 5px 0 #08070a;
+}
+:root[data-theme="light"] {
+    --bg: #fff6e8; --panel: #fffdf8; --panel-alt: #e8e5da;
+    --ink: #17151a; --muted: #77717a; --line: #17151a;
+    --shadow: 4px 5px 0 #17151a;
+}
+
+/* Color Themes */
+:root[data-color="synthwave"] { --pink: #ff2d95; --yellow: #ff2d95; --cyan: #00e5ff; --lime: #ff2d95; --purple: #c538ff; --orange: #ff6b35; }
+:root[data-color="synthwave"][data-theme="dark"], :root[data-color="synthwave"]:not([data-theme]) { --panel-alt: #2a1035; }
+:root[data-color="toxic"] { --pink: #ff4444; --yellow: #39ff14; --cyan: #39ff14; --lime: #39ff14; --purple: #ff8800; --orange: #ff6600; }
+:root[data-color="toxic"][data-theme="dark"], :root[data-color="toxic"]:not([data-theme]) { --panel-alt: #1a2810; }
+:root[data-color="arctic"] { --pink: #64b5f6; --yellow: #40c4ff; --cyan: #80d8ff; --lime: #82b1ff; --purple: #448aff; --orange: #29b6f6; }
+:root[data-color="arctic"][data-theme="dark"], :root[data-color="arctic"]:not([data-theme]) { --panel-alt: #1a2535; }
+:root[data-color="sunset"] { --pink: #ff1744; --yellow: #ff6d00; --cyan: #ffab40; --lime: #ff9100; --purple: #ff5252; --orange: #ff3d00; }
+:root[data-color="sunset"][data-theme="dark"], :root[data-color="sunset"]:not([data-theme]) { --panel-alt: #351a10; }
+:root[data-color="lavender"] { --pink: #f48fb1; --yellow: #b388ff; --cyan: #ea80fc; --lime: #ce93d8; --purple: #7c4dff; --orange: #e040fb; }
+:root[data-color="lavender"][data-theme="dark"], :root[data-color="lavender"]:not([data-theme]) { --panel-alt: #271a35; }
+
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Manrope', system-ui, sans-serif; }
+body { background:var(--bg); color:var(--ink); padding:15px; transition:all .2s; }
+.wrap { max-width:800px; margin:0 auto; }
+
+/* ========== HEADER ========== */
+.header{ margin-bottom:20px; }
+.header .eyebrow { font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:1px; color:var(--primary); display:flex; align-items:center; gap:6px; margin-bottom:6px;}
+.live-dot { width:8px; height:8px; background:var(--primary); border-radius:50%; animation:blink 1.5s infinite; }
+@keyframes blink { 0%, 100%{opacity:1;} 50%{opacity:0.4;} }
+.header h1 { font-size:28px; font-weight:950; letter-spacing:-1.5px; text-transform:uppercase; color:var(--ink); line-height:1; }
+.header .desc { font-size:12px; font-weight:700; color:var(--muted); margin-top:8px; }
+
+/* ========== CARD & FORM ========== */
+.card{ background:var(--panel); border:2px solid var(--line); border-radius:16px; padding:20px; box-shadow:var(--shadow); margin-bottom:20px; }
+.card-header{ display:flex; align-items:center; gap:10px; font-size:15px; font-weight:900; text-transform:uppercase; margin-bottom:15px; padding-bottom:10px; border-bottom:2px dashed var(--line); color:var(--ink); }
+.card-header i { color:var(--cyan); }
+
+.form-group{ margin-bottom:15px; }
+.form-group label{ display:block; font-size:11px; font-weight:900; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+.form-group input{ width:100%; background:var(--panel-alt); border:2px solid var(--line); border-radius:8px; padding:12px; color:var(--ink); font-size:14px; font-weight:700; transition:all .2s; }
+.form-group input:focus{ outline:none; border-color:var(--primary); box-shadow:2px 2px 0 var(--primary); }
+
+.btn-save{ width:100%; padding:14px; background:var(--primary); color:#17151a; border:2px solid var(--line); border-radius:12px; font-size:14px; font-weight:950; text-transform:uppercase; letter-spacing:1px; cursor:pointer; box-shadow:3px 3px 0 var(--line); transition:all .1s; margin-top:10px; }
+.btn-save:hover{ transform:translate(-2px,-2px); box-shadow:5px 5px 0 var(--line); }
+.btn-save:active{ transform:translate(2px,2px); box-shadow:none; }
+
+/* ========== MODALS ========== */
+.custom-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.6); z-index: 10000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.2s ease, visibility 0.2s ease; padding: 16px; }
+.custom-modal.show { opacity: 1; visibility: visible; }
+.modal-card { background: var(--panel); border: 2px solid var(--line); border-radius: 16px; padding: 20px; width: 380px; max-width: 100%; box-shadow: var(--shadow); transform: scale(0.9); transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.custom-modal.show .modal-card { transform: scale(1) rotate(-0.5deg); }
+.modal-title { font-size: 14px; font-weight: 950; text-transform: uppercase; letter-spacing: 0.5px; background: var(--primary); color: #17151a; padding: 4px 10px; border: 2px solid var(--line); border-radius: 6px; box-shadow: 2px 2px 0 var(--line); display: inline-block; margin-bottom: 14px; transform: rotate(-2deg); }
+.modal-body { font-size: 13px; line-height: 1.6; color: var(--ink); margin-bottom: 20px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+.btn-modal { padding: 8px 16px; font-weight: 950; font-size: 12px; border-radius: 8px; border: 2px solid var(--line); cursor: pointer; box-shadow: 3px 3px 0 var(--line); text-transform: uppercase; transition: all 0.1s ease; }
+.btn-modal:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0px var(--line); }
+.btn-modal:active { transform: translate(1px, 1px); box-shadow: none; }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <div class="header">
+        <div class="eyebrow"><span class="live-dot"></span> System Manager</div>
+        <h1>Security</h1>
+        <div class="desc">Ubah kredensial login Dashboard ProjectX</div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <i class="fa-solid fa-user-pen"></i> Ganti Username
+        </div>
+        <div class="form-group">
+            <label>Username Saat Ini</label>
+            <input type="text" id="user_oldUser" placeholder="Username saat ini">
+        </div>
+        <div class="form-group">
+            <label>Password Saat Ini</label>
+            <input type="password" id="user_oldPass" placeholder="Password saat ini">
+        </div>
+        <div class="form-group">
+            <label>Username Baru</label>
+            <input type="text" id="user_new" placeholder="Masukkan username baru">
+        </div>
+        <button class="btn-save" onclick="updateUsername()">Simpan Username</button>
+    </div>
+
+    <div class="card">
+        <div class="card-header" style="border-bottom-color:var(--lime);">
+            <i class="fa-solid fa-key" style="color:var(--lime)"></i> Ganti Password
+        </div>
+        <div class="form-group">
+            <label>Username Saat Ini</label>
+            <input type="text" id="pass_oldUser" placeholder="Username saat ini">
+        </div>
+        <div class="form-group">
+            <label>Password Saat Ini</label>
+            <input type="password" id="pass_oldPass" placeholder="Password saat ini">
+        </div>
+        <div class="form-group">
+            <label>Password Baru</label>
+            <input type="password" id="pass_new" placeholder="Masukkan password baru">
+        </div>
+        <button class="btn-save" style="background:var(--lime);" onclick="updatePassword()">Simpan Password</button>
+    </div>
+
+    <!-- REUSABLE MODAL -->
+    <div class="custom-modal" id="actionModal">
+        <div class="modal-card">
+            <div class="modal-title" id="actionModalTitle">Action</div>
+            <div class="modal-body" id="actionModalBody">Body content</div>
+            <div class="modal-actions" id="actionModalActions"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+function showModal(title, bodyHTML, buttonsHTML) {
+    document.getElementById('actionModalTitle').innerHTML = title;
+    document.getElementById('actionModalBody').innerHTML = bodyHTML;
+    document.getElementById('actionModalActions').innerHTML = buttonsHTML;
+    document.getElementById('actionModal').classList.add('show');
+}
+function closeModal() { document.getElementById('actionModal').classList.remove('show'); }
+
+function updateUsername() {
+    const oldUser = document.getElementById('user_oldUser').value.trim();
+    const oldPass = document.getElementById('user_oldPass').value.trim();
+    const newUser = document.getElementById('user_new').value.trim();
+
+    if(!oldUser || !oldPass || !newUser) {
+        showModal('<i class="fa-solid fa-triangle-exclamation"></i> Error', 'Semua kolom wajib diisi!', `<button class="btn-modal" onclick="closeModal()" style="background:var(--pink);color:#fff;">Tutup</button>`);
+        return;
+    }
+    sendUpdate(oldUser, oldPass, newUser, "");
+}
+
+function updatePassword() {
+    const oldUser = document.getElementById('pass_oldUser').value.trim();
+    const oldPass = document.getElementById('pass_oldPass').value.trim();
+    const newPass = document.getElementById('pass_new').value.trim();
+
+    if(!oldUser || !oldPass || !newPass) {
+        showModal('<i class="fa-solid fa-triangle-exclamation"></i> Error', 'Semua kolom wajib diisi!', `<button class="btn-modal" onclick="closeModal()" style="background:var(--pink);color:#fff;">Tutup</button>`);
+        return;
+    }
+    sendUpdate(oldUser, oldPass, "", newPass);
+}
+
+function sendUpdate(old_u, old_p, new_u, new_p) {
+    const payload = { old_user: old_u, old_pass: old_p, new_user: new_u, new_pass: new_p };
+
+    fetch('/api/auth/update', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload)
+    })
+    .then(r => r.json())
+    .then(res => {
+        if(res.status === 'success') {
+            showModal('<i class="fa-solid fa-circle-check"></i> Berhasil', res.message, `<button class="btn-modal" onclick="window.parent.location.reload()" style="background:var(--lime);color:#000;">OK, Login Ulang</button>`);
+        } else {
+            showModal('<i class="fa-solid fa-triangle-exclamation"></i> Gagal', res.message, `<button class="btn-modal" onclick="closeModal()" style="background:var(--pink);color:#fff;">Coba Lagi</button>`);
+        }
+    })
+    .catch(err => {
+        showModal('<i class="fa-solid fa-wifi"></i> Network Error', 'Gagal terhubung ke server', `<button class="btn-modal" onclick="closeModal()" style="background:var(--pink);color:#fff;">Tutup</button>`);
+    });
+}
+
+function syncTheme(){
+    try{
+        const parentHtml = window.parent?.document?.documentElement;
+        if(parentHtml) {
+            const theme = parentHtml.getAttribute('data-theme');
+            if(theme && theme !== 'dark') document.documentElement.setAttribute('data-theme', theme);
+            else document.documentElement.removeAttribute('data-theme');
+            
+            const color = parentHtml.getAttribute('data-color');
+            if(color && color !== 'default') document.documentElement.setAttribute('data-color', color);
+            else document.documentElement.removeAttribute('data-color');
+        }
+    }catch(e){}
+}
+syncTheme();
+setInterval(syncTheme, 1000);
+</script>
+</body>
+</html>

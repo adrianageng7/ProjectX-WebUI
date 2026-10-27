@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Credits & Thanks</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+/* ========== VARIABLES & RESET ========== */
+:root {
+    --bg: #18151e; --panel: #24202b; --panel-alt: #302b38;
+    --ink: #fffaf4; --muted: #aaa2ad; --line: #0d0b10;
+    --primary: #c538ff; --secondary: #00e5ff;
+    --pink: #ff5ca8; --cyan: #55dfff; --yellow: #ffe14a; 
+    --lime: #b8f34a; --orange: #ff9955; --purple: #9b7cff;
+    --shadow: 4px 5px 0 #08070a;
+}
+:root[data-theme="light"] {
+    --bg: #fff6e8; --panel: #fffdf8; --panel-alt: #e8e5da;
+    --ink: #17151a; --muted: #77717a; --line: #17151a;
+    --shadow: 4px 5px 0 #17151a;
+}
+
+/* Color Themes */
+:root[data-color="synthwave"] { --pink: #ff2d95; --yellow: #ff2d95; --cyan: #00e5ff; --lime: #ff2d95; --purple: #c538ff; --orange: #ff6b35; }
+:root[data-color="synthwave"][data-theme="dark"], :root[data-color="synthwave"]:not([data-theme]) { --panel-alt: #2a1035; }
+:root[data-color="toxic"] { --pink: #ff4444; --yellow: #39ff14; --cyan: #39ff14; --lime: #39ff14; --purple: #ff8800; --orange: #ff6600; }
+:root[data-color="toxic"][data-theme="dark"], :root[data-color="toxic"]:not([data-theme]) { --panel-alt: #1a2810; }
+:root[data-color="arctic"] { --pink: #64b5f6; --yellow: #40c4ff; --cyan: #80d8ff; --lime: #82b1ff; --purple: #448aff; --orange: #29b6f6; }
+:root[data-color="arctic"][data-theme="dark"], :root[data-color="arctic"]:not([data-theme]) { --panel-alt: #1a2535; }
+:root[data-color="sunset"] { --pink: #ff1744; --yellow: #ff6d00; --cyan: #ffab40; --lime: #ff9100; --purple: #ff5252; --orange: #ff3d00; }
+:root[data-color="sunset"][data-theme="dark"], :root[data-color="sunset"]:not([data-theme]) { --panel-alt: #351a10; }
+:root[data-color="lavender"] { --pink: #f48fb1; --yellow: #b388ff; --cyan: #ea80fc; --lime: #ce93d8; --purple: #7c4dff; --orange: #e040fb; }
+:root[data-color="lavender"][data-theme="dark"], :root[data-color="lavender"]:not([data-theme]) { --panel-alt: #271a35; }
+
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Manrope', system-ui, sans-serif; }
+body { background:var(--bg); color:var(--ink); padding:15px; transition:all .2s; }
+.wrap { max-width:800px; margin:0 auto; }
+
+/* ========== HEADER ========== */
+.header{ margin-bottom:20px; text-align: center; }
+.header img { width: 80px; margin-bottom: 15px; border-radius: 16px; box-shadow: var(--shadow); border: 2px solid var(--line); }
+.header h1 { font-size:28px; font-weight:950; letter-spacing:-1.5px; text-transform:uppercase; color:var(--ink); line-height:1; }
+.header .desc { font-size:12px; font-weight:700; color:var(--muted); margin-top:8px; }
+
+/* ========== CARD & CREDITS ========== */
+.card{ background:var(--panel); border:2px solid var(--line); border-radius:16px; padding:20px; box-shadow:var(--shadow); margin-bottom:20px; }
+.card-header{ display:flex; align-items:center; gap:10px; font-size:15px; font-weight:900; text-transform:uppercase; margin-bottom:15px; padding-bottom:10px; border-bottom:2px dashed var(--line); color:var(--ink); }
+
+.credit-item { display:flex; align-items:center; gap:15px; padding:15px; border-radius:12px; background:var(--panel-alt); border:2px solid var(--line); margin-bottom:15px; transition:transform 0.1s; text-decoration:none; color:var(--ink); box-shadow:2px 2px 0 var(--line); }
+.credit-item:hover { transform:translate(-2px, -2px); box-shadow:4px 4px 0 var(--line); }
+.credit-item:active { transform:translate(2px, 2px); box-shadow:none; }
+
+.credit-icon { width: 45px; height: 45px; border-radius: 10px; background: var(--purple); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 20px; border: 2px solid var(--line); }
+.credit-icon.telegram { background: #0088cc; }
+
+.credit-info { flex: 1; }
+.credit-role { font-size: 10px; font-weight: 900; text-transform: uppercase; color: var(--muted); letter-spacing: 0.5px; margin-bottom: 4px; }
+.credit-name { font-size: 16px; font-weight: 950; }
+.credit-sub { font-size: 12px; font-weight: 700; color: var(--cyan); margin-top: 2px; }
+
+.footer-text { text-align: center; font-size: 11px; font-weight: 700; color: var(--muted); margin-top: 30px; }
+.footer-text i { color: var(--pink); }
+
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <div class="header">
+        <img src="assets/favicon.png" alt="ProjectX Logo">
+        <h1>ProjectX Web UI</h1>
+        <div class="desc">A lightweight, powerful dashboard for Magisk & Box</div>
+    </div>
+
+    <div class="card">
+        <div class="card-header" style="border-bottom-color:var(--primary);">
+            <i class="fa-solid fa-code" style="color:var(--primary)"></i> Developer
+        </div>
+        
+        <a href="https://t.me/ntpsbl" target="_blank" class="credit-item">
+            <div class="credit-icon" style="background:var(--pink); color:#fff;"><i class="fa-solid fa-user-ninja"></i></div>
+            <div class="credit-info">
+                <div class="credit-role">Core Developer</div>
+                <div class="credit-name">MarkX</div>
+                <div class="credit-sub">@ntpsbl</div>
+            </div>
+            <i class="fa-solid fa-arrow-up-right-from-square" style="color:var(--muted); font-size:12px;"></i>
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-header" style="border-bottom-color:var(--cyan);">
+            <i class="fa-solid fa-users" style="color:var(--cyan)"></i> Community
+        </div>
+        
+        <a href="https://t.me/projectxwebui" target="_blank" class="credit-item">
+            <div class="credit-icon telegram"><i class="fa-brands fa-telegram"></i></div>
+            <div class="credit-info">
+                <div class="credit-role">Official Group</div>
+                <div class="credit-name">ProjectX Web UI</div>
+                <div class="credit-sub">Join on Telegram</div>
+            </div>
+            <i class="fa-solid fa-arrow-up-right-from-square" style="color:var(--muted); font-size:12px;"></i>
+        </a>
+    </div>
+
+    <div class="footer-text">
+        Made with <i class="fa-solid fa-heart"></i> for the community.
+    </div>
+</div>
+
+<script>
+function syncTheme(){
+    try{
+        const parentHtml = window.parent?.document?.documentElement;
+        if(parentHtml) {
+            const theme = parentHtml.getAttribute('data-theme');
+            if(theme && theme !== 'dark') document.documentElement.setAttribute('data-theme', theme);
+            else document.documentElement.removeAttribute('data-theme');
+            
+            const color = parentHtml.getAttribute('data-color');
+            if(color && color !== 'default') document.documentElement.setAttribute('data-color', color);
+            else document.documentElement.removeAttribute('data-color');
+        }
+    }catch(e){}
+}
+syncTheme();
+setInterval(syncTheme, 1000);
+</script>
+</body>
+</html>

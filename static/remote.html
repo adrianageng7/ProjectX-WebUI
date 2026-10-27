@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Screen Remote — ProjectX</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <style>
+        :root {
+            --bg: #18151e; --paper: #24202b; --ink: #fffaf4; --muted: #aaa2ad;
+            --line: #0d0b10; --shadow: 4px 5px 0 #08070a; --panel-alt: #302b38;
+            --pink: #ff5ca8; --yellow: #ffe14a; --cyan: #55dfff;
+            --lime: #b8f34a; --purple: #9b7cff; --orange: #ff9955;
+            --font: 'Plus Jakarta Sans', sans-serif; --font-mono: 'JetBrains Mono', monospace;
+            --bw: 2px; --bc: var(--line);
+            --bg-body: transparent; --panel-bg: var(--paper); --panel-bg-alt: var(--panel-alt);
+            --text: var(--ink); --text-muted: var(--muted);
+            --primary: var(--yellow); --primary-text: #000; --secondary: var(--pink);
+            --accent: var(--cyan); --danger: #ff3b30;
+            --bsh: var(--shadow); --bsh-sm: 3px 3px 0px var(--line);
+        }
+        :root[data-theme="light"] {
+            --bg: #fff6e8; --paper: #fffdf8; --ink: #17151a; --muted: #77717a;
+            --line: #17151a; --shadow: 4px 5px 0 #17151a; --panel-alt: #e8e5da;
+            --bg-body: transparent; --panel-bg: #fff; --panel-bg-alt: #f3f4f6;
+            --text: #111; --text-muted: #6b7280;
+        }
+        :root[data-color="synthwave"] { --pink:#ff2d95;--yellow:#ff2d95;--cyan:#00e5ff;--lime:#ff2d95;--purple:#c538ff;--orange:#ff6b35;--primary-text:#fff; }
+        :root[data-color="synthwave"][data-theme="dark"] { --panel-alt:#2a1035; }
+        :root[data-color="toxic"] { --pink:#ff4444;--yellow:#39ff14;--cyan:#39ff14;--lime:#39ff14;--purple:#ff8800;--orange:#ff6600;--primary-text:#000; }
+        :root[data-color="toxic"][data-theme="dark"] { --panel-alt:#1a2810; }
+        :root[data-color="arctic"] { --pink:#64b5f6;--yellow:#40c4ff;--cyan:#80d8ff;--lime:#82b1ff;--purple:#448aff;--orange:#29b6f6;--primary-text:#000; }
+        :root[data-color="arctic"][data-theme="dark"] { --panel-alt:#1a2535; }
+        :root[data-color="sunset"] { --pink:#ff1744;--yellow:#ff6d00;--cyan:#ffab40;--lime:#ff9100;--purple:#ff5252;--orange:#ff3d00;--primary-text:#000; }
+        :root[data-color="sunset"][data-theme="dark"] { --panel-alt:#351a10; }
+        :root[data-color="lavender"] { --pink:#f48fb1;--yellow:#b388ff;--cyan:#ea80fc;--lime:#ce93d8;--purple:#7c4dff;--orange:#e040fb;--primary-text:#000; }
+        :root[data-color="lavender"][data-theme="dark"] { --panel-alt:#271a35; }
+
+        *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0;}
+        html,body{font-family:var(--font);background:var(--bg-body);color:var(--text);height:100dvh;overflow:hidden;}
+        body{display:flex;flex-direction:column;}
+
+        /* ===== TOPBAR - ultra compact ===== */
+        .topbar {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 10px; height: 42px;
+            background: var(--panel-bg);
+            border-bottom: var(--bw) solid var(--bc);
+            flex-shrink: 0; position: relative; z-index: 10;
+        }
+        .topbar::after {
+            content:''; position:absolute; bottom:-2px; left:0; right:0; height:2px;
+            background: linear-gradient(90deg,var(--pink),var(--primary),var(--cyan),var(--purple));
+        }
+        .tb-left { display:flex; align-items:center; gap:6px; }
+        .tb-title { font-size:13px; font-weight:800; letter-spacing:-0.2px; }
+        .tb-title i { color:var(--primary); margin-right:4px; }
+
+        /* Status pills inside topbar */
+        .tb-status { display:flex; align-items:center; gap:6px; }
+        .spill {
+            display:flex; align-items:center; gap:4px;
+            padding:2px 7px; border:1px solid var(--bc);
+            border-radius:20px; font-size:10px; font-family:var(--font-mono);
+            background: var(--panel-bg-alt);
+        }
+        .sdot { width:6px; height:6px; border-radius:50%; background:var(--muted); }
+        .sdot.live { background:var(--lime); box-shadow:0 0 5px var(--lime); animation:blink 1.5s infinite; }
+        .sdot.err { background:var(--danger); }
+        @keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+
+        .tb-actions { display:flex; align-items:center; gap:5px; }
+        .ib {
+            width:30px; height:30px; border:var(--bw) solid var(--bc); border-radius:7px;
+            background:var(--panel-bg-alt); color:var(--text);
+            display:flex;align-items:center;justify-content:center;font-size:12px;
+            cursor:pointer; box-shadow:var(--bsh-sm); transition:transform .1s,box-shadow .1s;
+            text-decoration:none;
+        }
+        .ib:active{transform:translate(2px,2px);box-shadow:none;}
+        .ib.primary{border-color:var(--primary);color:var(--primary);}
+
+        /* ===== MAIN AREA ===== */
+        .main {flex:1;display:flex;overflow:hidden;position:relative;}
+
+        /* ===== SCREEN ===== */
+        .screen-wrap {
+            flex:1; display:flex; align-items:center; justify-content:center;
+            padding:8px; overflow:hidden; position:relative;
+        }
+        .screen-frame {
+            position:relative; display:inline-flex; align-items:center; justify-content:center;
+            background:#000; border:2px solid var(--bc); border-radius:10px;
+            overflow:hidden; cursor:crosshair; user-select:none;
+            max-height:calc(100dvh - 42px - 38px);
+            max-width:100%;
+        }
+        #simg {
+            display:block; max-height:calc(100dvh - 42px - 38px);
+            max-width:100%; object-fit:contain; pointer-events:none;
+        }
+        .s-overlay {
+            position:absolute; inset:0;
+            display:flex; align-items:center; justify-content:center; flex-direction:column; gap:10px;
+            background:rgba(0,0,0,.88); z-index:10; transition:opacity .3s;
+        }
+        .s-overlay.hidden{opacity:0;pointer-events:none;}
+        .ov-icon{font-size:32px;color:var(--muted);}
+        .ov-text{font-family:var(--font-mono);font-size:12px;color:var(--muted);text-align:center;padding:0 16px;line-height:1.5;}
+        .ov-btn{
+            padding:7px 16px; border:var(--bw) solid var(--primary);border-radius:7px;
+            background:transparent;color:var(--primary);font-family:var(--font-mono);
+            font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:1px;
+        }
+        .ov-btn:active{transform:translate(1px,1px);}
+
+        /* Tap ripple */
+        .ripple {
+            position:fixed; width:26px; height:26px; border-radius:50%;
+            border:2px solid var(--primary); pointer-events:none; z-index:99;
+            animation:rip .35s ease-out forwards; transform:translate(-50%,-50%);
+        }
+        @keyframes rip{from{opacity:1;transform:translate(-50%,-50%) scale(.4)}to{opacity:0;transform:translate(-50%,-50%) scale(2.2)}}
+
+        /* ===== SIDE CONTROLS - floating overlay ===== */
+        .ctrl-panel {
+            position:absolute; right:6px; top:50%; transform:translateY(-50%);
+            display:flex; flex-direction:column; align-items:center; gap:4px;
+            z-index:20;
+        }
+        .cb {
+            width:32px; height:32px; border:var(--bw) solid var(--bc);
+            border-radius:8px; background:var(--panel-bg);
+            color:var(--text-muted);
+            display:flex;align-items:center;justify-content:center;font-size:12px;
+            cursor:pointer; box-shadow:var(--bsh-sm);
+            transition:transform .1s,box-shadow .1s,color .15s;
+            opacity:.85;
+        }
+        .cb:hover{opacity:1;}
+        .cb:active{transform:translate(1px,1px);box-shadow:none;opacity:1;}
+        .cb.c-primary{border-color:var(--primary);color:var(--primary);}
+        .cb.c-accent{border-color:var(--accent);color:var(--accent);}
+        .cb.c-danger{border-color:var(--danger);color:var(--danger);}
+        .cb.c-purple{border-color:var(--purple);color:var(--purple);}
+        .cdiv{width:22px;height:1px;background:var(--bc);margin:2px 0;}
+
+        /* ===== BOTTOM NAV - thin ===== */
+        .bnav {
+            display:flex; align-items:center; justify-content:center; gap:6px;
+            padding:5px 10px; height:38px;
+            background:var(--panel-bg); border-top:var(--bw) solid var(--bc);
+            flex-shrink:0;
+        }
+        .nb {
+            flex:1; max-width:80px; height:28px;
+            border:var(--bw) solid var(--bc); border-radius:7px;
+            background:var(--panel-bg-alt); color:var(--text-muted);
+            display:flex;align-items:center;justify-content:center;gap:4px;
+            font-size:11px;font-family:var(--font-mono);font-weight:700;
+            cursor:pointer; box-shadow:var(--bsh-sm);
+            transition:transform .1s,box-shadow .1s;
+        }
+        .nb:active{transform:translate(1px,1px);box-shadow:none;}
+        .nb.back{border-color:var(--accent);color:var(--accent);}
+        .nb.home{border-color:var(--primary);color:var(--primary);}
+        .nb.rec{border-color:var(--purple);color:var(--purple);}
+
+        /* ===== TOAST ===== */
+        .toast {
+            position:fixed; bottom:55px; left:50%; transform:translateX(-50%) translateY(12px);
+            background:var(--panel-bg); border:var(--bw) solid var(--bc); border-radius:8px;
+            padding:6px 14px; font-family:var(--font-mono); font-size:11px; color:var(--text);
+            box-shadow:var(--bsh); opacity:0; transition:all .2s ease; pointer-events:none;
+            z-index:100; white-space:nowrap;
+        }
+        .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+        /* Quality panel */
+        .qpanel {
+            position:fixed; top:48px; right:6px; z-index:50;
+            background:var(--panel-bg); border:var(--bw) solid var(--bc);
+            border-radius:10px; padding:10px; box-shadow:var(--bsh);
+            display:none; flex-direction:column; gap:6px; min-width:160px;
+        }
+        .qpanel.show{display:flex;}
+        .qrow{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px;font-family:var(--font-mono);}
+        .qrow label{color:var(--text-muted);}
+        .qslider{flex:1;accent-color:var(--primary);}
+        .qval{color:var(--primary);font-weight:700;min-width:28px;text-align:right;}
+        .qbtn{padding:5px 10px;border:var(--bw) solid var(--primary);border-radius:6px;background:transparent;color:var(--primary);font-family:var(--font-mono);font-size:10px;font-weight:700;cursor:pointer;text-transform:uppercase;}
+    </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+    <div class="tb-left">
+        <div class="tb-title"><i class="fa-solid fa-mobile-screen-button"></i>Screen Remote</div>
+        <div class="tb-status">
+            <div class="spill"><div class="sdot" id="sdot"></div><span id="sconn">--</span></div>
+            <div class="spill"><i class="fa-solid fa-gauge-high" style="color:var(--accent);font-size:8px;"></i><span id="sfps">--</span></div>
+            <div class="spill"><span id="sres">--×--</span></div>
+        </div>
+    </div>
+    <div class="tb-actions">
+        <div class="ib" id="stream-btn" onclick="toggleStream()" title="Start/Stop">
+            <i class="fa-solid fa-play" id="stream-ico"></i>
+        </div>
+        <div class="ib" onclick="toggleQPanel()" title="Kualitas">
+            <i class="fa-solid fa-sliders"></i>
+        </div>
+        <a href="/" class="ib" title="Dashboard"><i class="fa-solid fa-house"></i></a>
+    </div>
+</div>
+
+<!-- QUALITY PANEL -->
+<div class="qpanel" id="qpanel">
+    <div class="qrow">
+        <label>Kualitas JPEG</label>
+        <span class="qval" id="qval">75</span>
+    </div>
+    <div class="qrow">
+        <input type="range" class="qslider" id="qslider" min="20" max="95" value="75" oninput="document.getElementById('qval').textContent=this.value">
+    </div>
+    <div class="qrow">
+        <label>FPS limit</label>
+        <select id="fps-sel" style="flex:1;border:1px solid var(--bc);background:var(--panel-bg-alt);color:var(--text);border-radius:4px;font-family:var(--font-mono);font-size:10px;padding:2px;">
+            <option value="80">~12 FPS</option>
+            <option value="120" selected>~8 FPS</option>
+            <option value="200">~5 FPS</option>
+            <option value="500">~2 FPS</option>
+        </select>
+    </div>
+    <button class="qbtn" onclick="applyQuality()">Apply</button>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+    <div class="screen-wrap">
+        <div class="screen-frame" id="sframe">
+            <div class="s-overlay" id="sovl">
+                <div class="ov-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
+                <div class="ov-text">Tekan <strong style="color:var(--primary)">▶</strong> untuk mulai stream</div>
+                <button class="ov-btn" onclick="startStream()">▶ Mulai</button>
+            </div>
+            <img id="simg" alt="Android Screen" draggable="false">
+        </div>
+    </div>
+
+    <!-- FLOATING SIDE CONTROLS -->
+    <div class="ctrl-panel">
+        <div class="cb c-primary" onclick="sendKey('power')" title="Power"><i class="fa-solid fa-power-off"></i></div>
+        <div class="cb c-accent" onclick="sendKey('wakeup')" title="Wake"><i class="fa-solid fa-sun"></i></div>
+        <div class="cdiv"></div>
+        <div class="cb" onclick="sendKey('volume_up')" title="Vol+"><i class="fa-solid fa-volume-high"></i></div>
+        <div class="cb" onclick="sendKey('volume_down')" title="Vol-"><i class="fa-solid fa-volume-low"></i></div>
+        <div class="cb" onclick="sendKey('mute')" title="Mute"><i class="fa-solid fa-volume-xmark"></i></div>
+        <div class="cdiv"></div>
+        <div class="cb" onclick="swipeDir('up')" title="Swipe ↑"><i class="fa-solid fa-arrow-up"></i></div>
+        <div class="cb" onclick="swipeDir('down')" title="Swipe ↓"><i class="fa-solid fa-arrow-down"></i></div>
+        <div class="cb" onclick="swipeDir('left')" title="Swipe ←"><i class="fa-solid fa-arrow-left"></i></div>
+        <div class="cb" onclick="swipeDir('right')" title="Swipe →"><i class="fa-solid fa-arrow-right"></i></div>
+        <div class="cdiv"></div>
+        <div class="cb c-purple" onclick="sendKey('menu')" title="Menu"><i class="fa-solid fa-bars"></i></div>
+        <div class="cb c-danger" onclick="sendKey('back')" title="Back"><i class="fa-solid fa-rotate-left"></i></div>
+    </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bnav">
+    <div class="nb back" onclick="sendKey('back')"><i class="fa-solid fa-arrow-left"></i>Back</div>
+    <div class="nb home" onclick="sendKey('home')"><i class="fa-regular fa-circle"></i>Home</div>
+    <div class="nb rec" onclick="sendKey('app_switch')"><i class="fa-regular fa-square"></i>Recents</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== THEME SYNC =====
+(function(){
+    const h = document.documentElement;
+    try {
+        const ph = window.parent.document.documentElement;
+        h.setAttribute('data-theme', ph.getAttribute('data-theme') || localStorage.getItem('brutalist_mode') || 'dark');
+        h.setAttribute('data-color', ph.getAttribute('data-color') || localStorage.getItem('brutalist_color') || 'default');
+        new MutationObserver(()=>{
+            h.setAttribute('data-theme', ph.getAttribute('data-theme')||'dark');
+            h.setAttribute('data-color', ph.getAttribute('data-color')||'default');
+        }).observe(ph,{attributes:true,attributeFilter:['data-theme','data-color']});
+    } catch(e) {
+        h.setAttribute('data-theme', localStorage.getItem('brutalist_mode')||'dark');
+        h.setAttribute('data-color', localStorage.getItem('brutalist_color')||'default');
+    }
+})();
+
+// ===== STATE =====
+const img   = document.getElementById('simg');
+const sovl  = document.getElementById('sovl');
+const sdot  = document.getElementById('sdot');
+const sconn = document.getElementById('sconn');
+const sfps  = document.getElementById('sfps');
+const sres  = document.getElementById('sres');
+const sframe= document.getElementById('sframe');
+const ico   = document.getElementById('stream-ico');
+
+let streaming = false;
+let fpsCount  = 0;
+let fpsTimer  = null;
+let quality   = 75;
+
+// Swipe
+let tX=0,tY=0,tT=0;
+let mDown=false,mX=0,mY=0,mT=0;
+
+// ===== STREAM =====
+function startStream() {
+    streaming = true;
+    sovl.classList.add('hidden');
+    ico.className = 'fa-solid fa-stop';
+    setStatus('connecting');
+    img.src = '/api/screen/stream?q=' + quality + '&t=' + Date.now();
+    img.onload = () => {
+        setStatus('live');
+        fpsCount++;
+        sres.textContent = img.naturalWidth + '×' + img.naturalHeight;
+    };
+    img.onerror = () => {
+        setStatus('error');
+        if (streaming) setTimeout(()=>{
+            img.src = '/api/screen/stream?q=' + quality + '&t=' + Date.now();
+        }, 2000);
+    };
+    fpsTimer = setInterval(()=>{ sfps.textContent = fpsCount + ' FPS'; fpsCount=0; }, 1000);
+}
+
+function stopStream() {
+    streaming = false;
+    sovl.classList.remove('hidden');
+    ico.className = 'fa-solid fa-play';
+    img.src = '';
+    img.onload = img.onerror = null;
+    setStatus('stopped');
+    sfps.textContent = '-- FPS';
+    clearInterval(fpsTimer);
+}
+
+function toggleStream() { streaming ? stopStream() : startStream(); }
+
+function setStatus(s) {
+    const states = {
+        connecting: ['','Konek...'],
+        live:       ['live','Live'],
+        error:      ['err','Putus'],
+        stopped:    ['','--'],
+    };
+    const [cls,txt] = states[s] || ['','--'];
+    sdot.className = 'sdot ' + cls;
+    sconn.textContent = txt;
+}
+
+// ===== QUALITY =====
+function toggleQPanel() {
+    document.getElementById('qpanel').classList.toggle('show');
+}
+function applyQuality() {
+    quality = parseInt(document.getElementById('qslider').value) || 75;
+    document.getElementById('qpanel').classList.remove('show');
+    showToast('JPEG Q=' + quality + '%');
+    if (streaming) { stopStream(); setTimeout(startStream, 300); }
+}
+
+// ===== TOUCH / CLICK CONTROLS =====
+sframe.addEventListener('click', function(e) {
+    if (!streaming || isSwiping) return;
+    const rect = img.getBoundingClientRect();
+    if (!img.naturalWidth || rect.width === 0) return;
+    const sx = img.naturalWidth / rect.width;
+    const sy = img.naturalHeight / rect.height;
+    const x  = Math.round((e.clientX - rect.left) * sx);
+    const y  = Math.round((e.clientY - rect.top)  * sy);
+    ctrl('tap', {x, y});
+    ripple(e.clientX, e.clientY);
+});
+
+let isSwiping = false;
+
+sframe.addEventListener('touchstart', e=>{
+    tX=e.touches[0].clientX; tY=e.touches[0].clientY; tT=Date.now(); isSwiping=false;
+},{passive:true});
+sframe.addEventListener('touchend', e=>{
+    const dx=e.changedTouches[0].clientX-tX, dy=e.changedTouches[0].clientY-tY;
+    const dist=Math.hypot(dx,dy), dt=Date.now()-tT;
+    if(dist>35){
+        isSwiping=true;
+        const rect=img.getBoundingClientRect();
+        const sx=img.naturalWidth/rect.width||1, sy=img.naturalHeight/rect.height||1;
+        ctrl('swipe',{
+            x1:Math.round((tX-rect.left)*sx), y1:Math.round((tY-rect.top)*sy),
+            x2:Math.round((e.changedTouches[0].clientX-rect.left)*sx),
+            y2:Math.round((e.changedTouches[0].clientY-rect.top)*sy),
+            duration:Math.max(80,Math.min(dt,800))
+        });
+        setTimeout(()=>{isSwiping=false;},200);
+    }
+},{passive:true});
+
+// Mouse drag for PC
+sframe.addEventListener('mousedown', e=>{
+    if(!streaming)return; mDown=true; mX=e.clientX; mY=e.clientY; mT=Date.now(); e.preventDefault();
+});
+window.addEventListener('mouseup', e=>{
+    if(!mDown)return; mDown=false; if(!streaming)return;
+    const dx=e.clientX-mX, dy=e.clientY-mY, dist=Math.hypot(dx,dy), dt=Date.now()-mT;
+    if(dist>30&&dt>50){
+        isSwiping=true;
+        const rect=img.getBoundingClientRect();
+        const sx=img.naturalWidth/rect.width||1, sy=img.naturalHeight/rect.height||1;
+        ctrl('swipe',{
+            x1:Math.round((mX-rect.left)*sx), y1:Math.round((mY-rect.top)*sy),
+            x2:Math.round((e.clientX-rect.left)*sx), y2:Math.round((e.clientY-rect.top)*sy),
+            duration:Math.max(80,Math.min(dt,800))
+        });
+        setTimeout(()=>{isSwiping=false;},200);
+    } else { setTimeout(()=>{isSwiping=false;},100); }
+});
+
+// ===== CONTROL API =====
+function ctrl(action, data) {
+    fetch('/api/screen/control',{
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({action,...data})
+    }).catch(()=>{});
+}
+
+const KEYS={home:3,back:4,app_switch:187,volume_up:24,volume_down:25,mute:164,power:26,wakeup:224,menu:82};
+
+function sendKey(k) {
+    const code=KEYS[k]; if(!code)return;
+    ctrl('key',{keycode:code});
+    showToast(k.replace('_',' ').toUpperCase());
+}
+
+function swipeDir(dir) {
+    const m={up:{x1:540,y1:1500,x2:540,y2:300},down:{x1:540,y1:300,x2:540,y2:1500},
+             left:{x1:900,y1:960,x2:100,y2:960},right:{x1:100,y1:960,x2:900,y2:960}};
+    const s=m[dir]; if(s){ ctrl('swipe',{...s,duration:250}); showToast('↔ '+dir); }
+}
+
+// ===== VISUAL =====
+function ripple(x,y){
+    const r=document.createElement('div'); r.className='ripple';
+    r.style.left=x+'px'; r.style.top=y+'px';
+    document.body.appendChild(r); setTimeout(()=>r.remove(),400);
+}
+
+let toastTm=null;
+function showToast(m){
+    const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show');
+    clearTimeout(toastTm); toastTm=setTimeout(()=>t.classList.remove('show'),1200);
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown',e=>{
+    if(!streaming)return;
+    const map={Escape:'back',' ':'home',Tab:'app_switch','+':'volume_up','-':'volume_down'};
+    if(map[e.key]){sendKey(map[e.key]);e.preventDefault();return;}
+    const dirs={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right'};
+    if(dirs[e.key]){swipeDir(dirs[e.key]);e.preventDefault();}
+});
+
+// Close qpanel on outside click
+document.addEventListener('click',e=>{
+    if(!e.target.closest('#qpanel')&&!e.target.closest('.tb-actions'))
+        document.getElementById('qpanel').classList.remove('show');
+});
+</script>
+</body>
+</html>

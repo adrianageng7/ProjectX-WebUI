@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>SMS Inbox — ProjectX</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800;900&family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+    <style>
+        :root {
+            /* DEFAULT DARK MODE */
+            --bg: #18151e;
+            --paper: #24202b;
+            --ink: #fffaf4;
+            --muted: #aaa2ad;
+            --line: #0d0b10;
+            --shadow: 4px 5px 0 #08070a;
+            --panel-alt: #302b38;
+            
+            /* DEFAULT COLOR ACCENTS (Retro Pop) */
+            --pink: #ff5ca8;
+            --yellow: #ffe14a;
+            --cyan: #55dfff;
+            --lime: #b8f34a;
+            --purple: #9b7cff;
+            --orange: #ff9955;
+            
+            --font: 'Plus Jakarta Sans', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            --border-width: 2px;
+            --border-color: var(--line);
+            --bg-body: transparent;
+            --panel-bg: var(--paper);
+            --panel-bg-alt: var(--panel-alt);
+            --text: var(--ink);
+            --text-muted: var(--muted);
+            
+            --primary: var(--yellow);
+            --primary-text: #000000;
+            --secondary: var(--pink);
+            --accent: var(--cyan);
+            --danger: #ff3b30;
+            
+            --brutal-shadow: var(--shadow);
+            --brutal-shadow-sm: 3px 3px 0px var(--line);
+        }
+
+        :root[data-theme="light"] {
+            --bg: #fff6e8;
+            --paper: #fffdf8;
+            --ink: #17151a;
+            --muted: #77717a;
+            --line: #17151a;
+            --shadow: 4px 5px 0 #17151a;
+            --panel-alt: #e8e5da;
+            --border-color: #1a1a1a;
+            --panel-bg: #ffffff;
+            --panel-bg-alt: #f3f4f6;
+            --text: #111827;
+            --text-muted: #6b7280;
+        }
+
+        /* ===== COLOR SCHEMES ===== */
+        :root[data-color="synthwave"] {
+            --pink: #ff2d95; --yellow: #ff2d95; --cyan: #00e5ff; --lime: #ff2d95;
+            --purple: #c538ff; --orange: #ff6b35; --primary-text: #ffffff;
+        }
+        :root[data-color="synthwave"][data-theme="dark"],
+        :root[data-color="synthwave"]:not([data-theme]) { --panel-alt: #2a1035; }
+
+        :root[data-color="toxic"] {
+            --pink: #ff4444; --yellow: #39ff14; --cyan: #39ff14; --lime: #39ff14;
+            --purple: #ff8800; --orange: #ff6600; --primary-text: #000000;
+        }
+        :root[data-color="toxic"][data-theme="dark"],
+        :root[data-color="toxic"]:not([data-theme]) { --panel-alt: #1a2810; }
+
+        :root[data-color="arctic"] {
+            --pink: #64b5f6; --yellow: #40c4ff; --cyan: #80d8ff; --lime: #82b1ff;
+            --purple: #448aff; --orange: #29b6f6; --primary-text: #000000;
+        }
+        :root[data-color="arctic"][data-theme="dark"],
+        :root[data-color="arctic"]:not([data-theme]) { --panel-alt: #1a2535; }
+
+        :root[data-color="sunset"] {
+            --pink: #ff1744; --yellow: #ff6d00; --cyan: #ffab40; --lime: #ff9100;
+            --purple: #ff5252; --orange: #ff3d00; --primary-text: #000000;
+        }
+        :root[data-color="sunset"][data-theme="dark"],
+        :root[data-color="sunset"]:not([data-theme]) { --panel-alt: #351a10; }
+
+        :root[data-color="lavender"] {
+            --pink: #f48fb1; --yellow: #b388ff; --cyan: #ea80fc; --lime: #ce93d8;
+            --purple: #7c4dff; --orange: #e040fb; --primary-text: #000000;
+        }
+        :root[data-color="lavender"][data-theme="dark"],
+        :root[data-color="lavender"]:not([data-theme]) { --panel-alt: #271a35; }
+
+        * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
+        body {
+            margin: 0; padding: 16px; padding-bottom: 80px;
+            font-family: var(--font); color: var(--text); background: var(--bg-body);
+            min-height: 100vh; transition: background 0.2s, color 0.2s;
+        }
+        .wrap { max-width: 820px; margin: 0 auto; }
+
+        /* CARD */
+        .card {
+            background: var(--panel-bg);
+            border: var(--border-width) solid var(--border-color);
+            border-radius: 16px; overflow: hidden;
+            box-shadow: var(--brutal-shadow); margin-bottom: 16px;
+        }
+
+        /* HEADER */
+        .header {
+            padding: 14px 18px;
+            background: var(--panel-bg-alt);
+            border-bottom: var(--border-width) solid var(--border-color);
+            display: flex; justify-content: space-between; align-items: center;
+            gap: 12px; flex-wrap: wrap;
+        }
+        .header-left { display: flex; align-items: center; gap: 10px; }
+        .header-title {
+            font-size: 16px; font-weight: 900; margin: 0;
+            text-transform: uppercase; letter-spacing: -0.5px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .sms-badge {
+            background: var(--primary); color: var(--primary-text);
+            padding: 2px 8px; border-radius: 6px; font-size: 11px;
+            font-weight: 900; border: 1px solid var(--border-color);
+        }
+
+        /* BUTTONS */
+        .btn {
+            background: var(--panel-bg); color: var(--text);
+            border: var(--border-width) solid var(--border-color);
+            padding: 8px 13px; border-radius: 8px; cursor: pointer;
+            font-weight: 800; font-size: 12px; font-family: var(--font);
+            display: inline-flex; align-items: center; gap: 6px;
+            text-decoration: none; transition: 0.1s; white-space: nowrap;
+            box-shadow: var(--brutal-shadow-sm);
+        }
+        .btn:hover { background: var(--primary); color: var(--primary-text); transform: translate(-1px, -1px); }
+        .btn:active { transform: translate(1px, 1px); box-shadow: none; }
+        .btn.danger { color: var(--danger); }
+        .btn.danger:hover { background: var(--danger); color: #fff; }
+
+        /* SEARCH BAR & FILTERS */
+        .search-area {
+            padding: 12px 18px;
+            background: var(--panel-bg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+        }
+        .search-box {
+            display: flex; align-items: center;
+            border: var(--border-width) solid var(--border-color);
+            border-radius: 8px; padding: 0 10px;
+            background: var(--panel-bg-alt); flex: 1; min-width: 160px;
+        }
+        .search-box input {
+            background: transparent; border: none; color: var(--text);
+            padding: 9px 8px; width: 100%; font-family: var(--font);
+            font-size: 13px; font-weight: 700;
+        }
+        .search-box i { color: var(--text-muted); }
+
+        .filter-chips { display: flex; gap: 6px; }
+        .chip {
+            padding: 6px 10px; border-radius: 7px;
+            border: 1px solid var(--border-color);
+            background: var(--panel-bg-alt); color: var(--text-muted);
+            font-size: 11px; font-weight: 800; cursor: pointer;
+            text-transform: uppercase; transition: 0.1s;
+        }
+        .chip.active, .chip:hover {
+            background: var(--primary); color: var(--primary-text);
+        }
+
+        /* SMS LIST */
+        .sms-list { list-style: none; padding: 0; margin: 0; }
+        .sms-item {
+            padding: 16px 18px; border-bottom: 1px solid var(--border-color);
+            display: flex; flex-direction: column; gap: 8px;
+            transition: background 0.12s;
+        }
+        .sms-item:last-child { border-bottom: none; }
+        .sms-item:hover { background: rgba(255,255,255,0.03); }
+
+        .sms-top {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            gap: 10px;
+        }
+        .sms-sender-info { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .sms-sender {
+            font-weight: 900; font-size: 14px; color: var(--accent);
+            text-transform: uppercase;
+        }
+        .type-tag {
+            font-size: 9px; font-weight: 900; text-transform: uppercase;
+            padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border-color);
+            background: var(--panel-bg-alt); color: var(--text-muted);
+        }
+        .type-tag.inbox { color: var(--primary); border-color: var(--primary); }
+
+        .sms-date {
+            font-family: var(--font-mono); font-size: 11px;
+            color: var(--text-muted); font-weight: 600; white-space: nowrap;
+        }
+
+        .sms-body {
+            font-size: 13px; line-height: 1.5; font-weight: 600;
+            color: var(--text); word-break: break-word; white-space: pre-wrap;
+        }
+
+        /* OTP HIGHLIGHT BOX */
+        .otp-box {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 8px 12px; border-radius: 8px;
+            background: rgba(212, 255, 0, 0.08);
+            border: 2px dashed var(--primary);
+            margin-top: 4px; width: fit-content;
+        }
+        .otp-label {
+            font-size: 10px; font-weight: 900; text-transform: uppercase;
+            color: var(--primary); letter-spacing: 0.5px;
+        }
+        .otp-code {
+            font-family: var(--font-mono); font-size: 16px;
+            font-weight: 900; color: var(--text); letter-spacing: 2px;
+        }
+        .btn-copy-otp {
+            background: var(--primary); color: var(--primary-text);
+            border: none; border-radius: 6px; padding: 4px 8px;
+            font-weight: 900; font-size: 11px; cursor: pointer;
+            display: flex; align-items: center; gap: 4px;
+        }
+        .btn-copy-otp:hover { transform: scale(1.04); }
+
+        .sms-footer {
+            display: flex; justify-content: flex-end; align-items: center;
+            margin-top: 4px;
+        }
+        .btn-del {
+            background: transparent; border: none; color: var(--text-muted);
+            font-size: 13px; cursor: pointer; padding: 4px 8px; border-radius: 6px;
+            display: flex; align-items: center; gap: 4px; font-weight: 700;
+        }
+        .btn-del:hover { color: var(--danger); background: rgba(255,59,48,0.1); }
+
+        /* EMPTY STATE */
+        .empty-state {
+            padding: 48px 16px; text-align: center; color: var(--text-muted);
+        }
+        .empty-state i { font-size: 38px; opacity: 0.3; margin-bottom: 12px; display: block; }
+        .empty-state p { font-weight: 700; margin: 0; font-size: 14px; }
+
+        /* TOAST */
+        .toast {
+            position: fixed; bottom: 24px; left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: var(--primary); color: var(--primary-text);
+            padding: 10px 18px; border-radius: 10px; font-weight: 900;
+            font-size: 13px; box-shadow: var(--brutal-shadow);
+            border: var(--border-width) solid var(--border-color);
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 9999; opacity: 0; pointer-events: none;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+        /* UNIVERSAL THEME-SYNCED MODAL */
+        .custom-modal {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.65);
+            z-index: 10000;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+            padding: 16px;
+        }
+        .custom-modal.show { opacity: 1; visibility: visible; }
+        .modal-card {
+            background: var(--paper); border: 2px solid var(--line); border-radius: 16px;
+            padding: 20px; width: 380px; max-width: 100%; box-shadow: var(--shadow);
+            transform: scale(0.9); transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .custom-modal.show .modal-card { transform: scale(1); }
+        .modal-title {
+            font-size: 13px; font-weight: 950; text-transform: uppercase;
+            padding: 4px 10px; border: 2px solid var(--line); border-radius: 6px;
+            box-shadow: 2px 2px 0 var(--line); display: inline-flex; align-items: center; gap: 6px;
+            margin-bottom: 12px; background: var(--pink); color: #fff;
+        }
+        .modal-body { font-size: 13px; line-height: 1.5; color: var(--ink); margin-bottom: 16px; font-weight: 700; }
+        .modal-actions { display: flex; justify-content: flex-end; gap: 8px; }
+        .btn-modal {
+            padding: 8px 16px; font-weight: 950; font-size: 12px; border-radius: 8px;
+            border: 2px solid var(--line); cursor: pointer; box-shadow: 3px 3px 0 var(--line);
+            text-transform: uppercase; transition: all 0.1s ease; font-family: inherit;
+        }
+        .btn-modal:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--line); }
+        .btn-modal:active { transform: translate(1px, 1px); box-shadow: none; }
+        .btn-modal.cancel { background: var(--panel-alt); color: var(--ink); }
+        .btn-modal.danger { background: var(--pink); color: #fff; }
+    </style>
+</head>
+<body>
+
+<div class="wrap">
+    <div class="card">
+        <!-- HEADER -->
+        <div class="header">
+            <div class="header-left">
+                <h1 class="header-title">
+                    <i class="fa-solid fa-inbox"></i> Pesan Masuk
+                </h1>
+                <span class="sms-badge" id="smsCount">0 Pesan</span>
+            </div>
+            <div style="display:flex; gap:8px;">
+                <button class="btn" onclick="fetchSMS()" title="Refresh Pesan">
+                    <i class="fa-solid fa-rotate-right"></i> Refresh
+                </button>
+                <button class="btn danger" onclick="confirmDeleteAll()" title="Hapus Semua SMS">
+                    <i class="fa-solid fa-trash-can"></i> Kosongkan
+                </button>
+            </div>
+        </div>
+
+        <!-- SEARCH & CHIPS -->
+        <div class="search-area">
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="searchInput" placeholder="Cari pesan, nomor, OTP..." oninput="filterSMS()">
+            </div>
+            <div class="filter-chips">
+                <div class="chip active" onclick="setFilter('all', this)">Semua</div>
+                <div class="chip" onclick="setFilter('otp', this)">⚡ Kode OTP</div>
+                <div class="chip" onclick="setFilter('inbox', this)">Masuk</div>
+            </div>
+        </div>
+
+        <!-- SMS LIST CONTAINER -->
+        <ul class="sms-list" id="smsList"></ul>
+    </div>
+</div>
+
+<div class="toast" id="toastBox">OTP Disalin!</div>
+
+<!-- UNIVERSAL POPUP MODAL -->
+<div class="custom-modal" id="smsModal" onclick="closeModal()">
+    <div class="modal-card" onclick="event.stopPropagation()">
+        <div class="modal-title" id="smsModalTitle"><i class="fa-solid fa-triangle-exclamation"></i> Konfirmasi</div>
+        <div class="modal-body" id="smsModalBody"></div>
+        <div class="modal-actions" id="smsModalActions"></div>
+    </div>
+</div>
+
+<script>
+let allMessages = [];
+let activeFilter = 'all';
+
+// Fetch daftar SMS dari Go Backend
+async function fetchSMS() {
+    try {
+        const res = await fetch('/api/sms/list?_=' + Date.now());
+        const data = await res.json();
+        allMessages = data.messages || [];
+        document.getElementById('smsCount').textContent = allMessages.length + ' Pesan';
+        renderList();
+    } catch (e) {
+        console.error("Gagal memuat SMS:", e);
+    }
+}
+
+function setFilter(filter, el) {
+    activeFilter = filter;
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    renderList();
+}
+
+function filterSMS() {
+    renderList();
+}
+
+function renderList() {
+    const listEl = document.getElementById('smsList');
+    listEl.innerHTML = '';
+
+    const query = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+
+    const filtered = allMessages.filter(m => {
+        // Filter kategori
+        if (activeFilter === 'otp' && !m.otp) return false;
+        if (activeFilter === 'inbox' && m.type !== 1) return false;
+
+        // Filter search query
+        if (query) {
+            const inAddr = (m.address || '').toLowerCase().includes(query);
+            const inBody = (m.body || '').toLowerCase().includes(query);
+            const inOTP = (m.otp || '').toLowerCase().includes(query);
+            return inAddr || inBody || inOTP;
+        }
+        return true;
+    });
+
+    if (filtered.length === 0) {
+        listEl.innerHTML = `
+            <li class="empty-state">
+                <i class="fa-regular fa-envelope-open"></i>
+                <p>Tidak ada pesan masuk.</p>
+            </li>
+        `;
+        return;
+    }
+
+    filtered.forEach(m => {
+        const li = document.createElement('li');
+        li.className = 'sms-item';
+
+        const isInbox = m.type === 1;
+        const typeLabel = isInbox ? 'Masuk' : 'Keluar';
+        const typeClass = isInbox ? 'inbox' : '';
+
+        let otpHtml = '';
+        if (m.otp) {
+            otpHtml = `
+                <div class="otp-box">
+                    <span class="otp-label">Kode OTP:</span>
+                    <span class="otp-code">${escapeHtml(m.otp)}</span>
+                    <button class="btn-copy-otp" onclick="copyOTP('${escapeHtml(m.otp)}')">
+                        <i class="fa-solid fa-copy"></i> Salin
+                    </button>
+                </div>
+            `;
+        }
+
+        li.innerHTML = `
+            <div class="sms-top">
+                <div class="sms-sender-info">
+                    <span class="sms-sender">${escapeHtml(m.address || 'Unknown')}</span>
+                    <span class="type-tag ${typeClass}">${typeLabel}</span>
+                </div>
+                <span class="sms-date">${escapeHtml(m.formatted_time || '-')}</span>
+            </div>
+            <div class="sms-body">${escapeHtml(m.body || '')}</div>
+            ${otpHtml}
+            <div class="sms-footer">
+                <button class="btn-del" onclick="deleteSMS('${m.id}')">
+                    <i class="fa-solid fa-trash-can"></i> Hapus
+                </button>
+            </div>
+        `;
+
+        listEl.appendChild(li);
+    });
+}
+
+// Copy OTP ke clipboard
+function copyOTP(otp) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(otp);
+    } else {
+        const ta = document.createElement('textarea');
+        ta.value = otp;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+    }
+    showToast('OTP ' + otp + ' disalin!');
+}
+
+function showToast(msg) {
+    const t = document.getElementById('toastBox');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+function showModal(title, bodyHTML, actionsHTML) {
+    document.getElementById('smsModalTitle').innerHTML = title;
+    document.getElementById('smsModalBody').innerHTML = bodyHTML;
+    document.getElementById('smsModalActions').innerHTML = actionsHTML;
+    document.getElementById('smsModal').classList.add('show');
+}
+
+function closeModal() {
+    document.getElementById('smsModal').classList.remove('show');
+}
+
+// Hapus satu pesan dengan modal
+function deleteSMS(id) {
+    const title = '<i class="fa-solid fa-triangle-exclamation"></i> Hapus Pesan';
+    const body = `Apakah Anda yakin ingin menghapus pesan ini? Tindakan ini tidak dapat dibatalkan.`;
+    const actions = `
+        <button class="btn-modal cancel" onclick="closeModal()">Batal</button>
+        <button class="btn-modal danger" onclick="doDeleteSingle('${id}')"><i class="fa-solid fa-trash-can"></i> Hapus</button>
+    `;
+    showModal(title, body, actions);
+}
+
+async function doDeleteSingle(id) {
+    closeModal();
+    try {
+        const res = await fetch('/api/sms/delete', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({id: id})
+        });
+        const d = await res.json();
+        showToast(d.message || 'Pesan dihapus');
+        fetchSMS();
+    } catch(e) {
+        showToast("Gagal menghapus pesan");
+    }
+}
+
+// Hapus semua pesan dengan modal
+function confirmDeleteAll() {
+    if (allMessages.length === 0) {
+        showToast('Tidak ada pesan untuk dihapus');
+        return;
+    }
+    const title = '<i class="fa-solid fa-triangle-exclamation"></i> Kosongkan Inbox';
+    const body = `Apakah Anda yakin ingin menghapus <strong>SEMUA (${allMessages.length}) pesan</strong>? Semua riwayat SMS akan hilang permanen.`;
+    const actions = `
+        <button class="btn-modal cancel" onclick="closeModal()">Batal</button>
+        <button class="btn-modal danger" onclick="doDeleteAll()"><i class="fa-solid fa-trash-can"></i> Hapus Semua</button>
+    `;
+    showModal(title, body, actions);
+}
+
+async function doDeleteAll() {
+    closeModal();
+    try {
+        const res = await fetch('/api/sms/delete', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({all: true})
+        });
+        const d = await res.json();
+        showToast(d.message || 'Semua pesan dibersihkan');
+        fetchSMS();
+    } catch(e) {
+        showToast("Gagal mengosongkan pesan");
+    }
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.innerText = text;
+    return div.innerHTML;
+}
+
+// ===== SYNC THEME DENGAN DASHBOARD =====
+function syncTheme() {
+    try {
+        const parentHtml = window.parent?.document?.documentElement;
+        const theme = parentHtml?.getAttribute('data-theme') || localStorage.getItem('brutalist_mode');
+        if (theme && theme !== 'dark') document.documentElement.setAttribute('data-theme', theme);
+        else document.documentElement.removeAttribute('data-theme');
+
+        const color = parentHtml?.getAttribute('data-color') || localStorage.getItem('brutalist_color');
+        if (color && color !== 'default') document.documentElement.setAttribute('data-color', color);
+        else document.documentElement.removeAttribute('data-color');
+    } catch(e) {}
+}
+
+syncTheme();
+setInterval(syncTheme, 800);
+
+// Load data awal & auto-refresh setiap 6 detik
+fetchSMS();
+setInterval(fetchSMS, 6000);
+</script>
+</body>
+</html>

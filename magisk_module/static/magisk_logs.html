@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Magisk Logs</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+/* ========== VARIABLES & RESET ========== */
+:root {
+    --bg: #18151e; --panel: #24202b; --panel-alt: #302b38;
+    --ink: #fffaf4; --muted: #aaa2ad; --line: #0d0b10;
+    --primary: #c538ff; --secondary: #00e5ff;
+    --pink: #ff5ca8; --cyan: #55dfff; --yellow: #ffe14a; 
+    --lime: #b8f34a; --orange: #ff9955; --purple: #9b7cff;
+    --shadow: 4px 5px 0 #08070a;
+}
+:root[data-theme="light"] {
+    --bg: #fff6e8; --panel: #fffdf8; --panel-alt: #e8e5da;
+    --ink: #17151a; --muted: #77717a; --line: #17151a;
+    --shadow: 4px 5px 0 #17151a;
+}
+
+/* Color Themes */
+:root[data-color="synthwave"] { --pink: #ff2d95; --yellow: #ff2d95; --cyan: #00e5ff; --lime: #ff2d95; --purple: #c538ff; --orange: #ff6b35; }
+:root[data-color="synthwave"][data-theme="dark"], :root[data-color="synthwave"]:not([data-theme]) { --panel-alt: #2a1035; }
+:root[data-color="toxic"] { --pink: #ff4444; --yellow: #39ff14; --cyan: #39ff14; --lime: #39ff14; --purple: #ff8800; --orange: #ff6600; }
+:root[data-color="toxic"][data-theme="dark"], :root[data-color="toxic"]:not([data-theme]) { --panel-alt: #1a2810; }
+:root[data-color="arctic"] { --pink: #64b5f6; --yellow: #40c4ff; --cyan: #80d8ff; --lime: #82b1ff; --purple: #448aff; --orange: #29b6f6; }
+:root[data-color="arctic"][data-theme="dark"], :root[data-color="arctic"]:not([data-theme]) { --panel-alt: #1a2535; }
+:root[data-color="sunset"] { --pink: #ff1744; --yellow: #ff6d00; --cyan: #ffab40; --lime: #ff9100; --purple: #ff5252; --orange: #ff3d00; }
+:root[data-color="sunset"][data-theme="dark"], :root[data-color="sunset"]:not([data-theme]) { --panel-alt: #351a10; }
+:root[data-color="lavender"] { --pink: #f48fb1; --yellow: #b388ff; --cyan: #ea80fc; --lime: #ce93d8; --purple: #7c4dff; --orange: #e040fb; }
+:root[data-color="lavender"][data-theme="dark"], :root[data-color="lavender"]:not([data-theme]) { --panel-alt: #271a35; }
+
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Manrope', system-ui, sans-serif; }
+body { background:var(--bg); color:var(--ink); padding:15px; transition:all .2s; height: 100vh; display: flex; flex-direction: column; }
+.wrap { max-width:800px; margin:0 auto; width:100%; display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+
+/* ========== HEADER ========== */
+.header{ margin-bottom:20px; display: flex; justify-content: space-between; align-items: flex-end; flex-shrink: 0; }
+.header-left .eyebrow { font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:1px; color:var(--cyan); display:flex; align-items:center; gap:6px; margin-bottom:6px;}
+.live-dot { width:8px; height:8px; background:var(--cyan); border-radius:50%; animation:blink 1.5s infinite; }
+@keyframes blink { 0%, 100%{opacity:1;} 50%{opacity:0.4;} }
+.header h1 { font-size:28px; font-weight:950; letter-spacing:-1.5px; text-transform:uppercase; color:var(--ink); line-height:1; }
+.header .desc { font-size:12px; font-weight:700; color:var(--muted); margin-top:8px; }
+
+.btn { padding: 10px 14px; background: var(--panel); border: 2px solid var(--line); border-radius: 8px; color: var(--ink); font-weight: 950; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; box-shadow: 3px 3px 0 var(--line); transition: all 0.1s; }
+.btn:hover { background: var(--cyan); color: #000; transform: translate(-2px, -2px); box-shadow: 5px 5px 0 var(--line); }
+.btn:active { transform: translate(2px, 2px); box-shadow: none; }
+
+/* ========== LOG CONTAINER ========== */
+.card{ background:var(--panel); border:2px solid var(--line); border-radius:16px; padding:20px; box-shadow:var(--shadow); display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+.card-header{ display:flex; align-items:center; gap:10px; font-size:15px; font-weight:900; text-transform:uppercase; margin-bottom:15px; padding-bottom:10px; border-bottom:2px dashed var(--line); color:var(--ink); }
+.card-header i { color:var(--lime); }
+
+.log-terminal { flex: 1; background: #0a0a0a; border: 2px solid var(--line); border-radius: 12px; padding: 15px; overflow-y: auto; color: #39ff14; font-family: monospace; font-size: 11px; line-height: 1.5; white-space: pre-wrap; word-break: break-all; }
+.log-terminal::-webkit-scrollbar { width: 8px; }
+.log-terminal::-webkit-scrollbar-thumb { background: var(--line); border-radius: 4px; }
+
+.loading { display: flex; align-items: center; justify-content: center; height: 100%; color: var(--muted); font-size: 14px; font-weight: 800; text-transform: uppercase; gap: 10px; }
+
+@media(max-width:600px){
+    body{padding:12px}
+    .header h1 { font-size:22px; }
+    .btn { padding: 8px 12px; font-size: 11px; }
+}
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <div class="header">
+        <div class="header-left">
+            <div class="eyebrow"><span class="live-dot"></span> System Manager</div>
+            <h1>Magisk Logs</h1>
+            <div class="desc">Memeriksa log dari daemon Magisk / KernelSU</div>
+        </div>
+        <button class="btn" onclick="fetchLogs()"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <i class="fa-solid fa-terminal"></i> /cache/magisk.log
+        </div>
+        <div class="log-terminal" id="logContainer">
+            <div class="loading"><i class="fa-solid fa-spinner fa-spin"></i> Membaca Log...</div>
+        </div>
+    </div>
+</div>
+
+<script>
+function fetchLogs() {
+    const container = document.getElementById('logContainer');
+    container.innerHTML = '<div class="loading"><i class="fa-solid fa-spinner fa-spin"></i> Membaca Log...</div>';
+    
+    fetch('/api/magisk_log?_=' + Date.now())
+    .then(r => r.json())
+    .then(res => {
+        if(res.status === 'success') {
+            container.innerText = res.log || 'Log kosong.';
+            // Auto scroll to bottom
+            container.scrollTop = container.scrollHeight;
+        } else {
+            container.innerHTML = `<div class="loading" style="color:var(--pink);"><i class="fa-solid fa-triangle-exclamation"></i> ${res.message}</div>`;
+        }
+    })
+    .catch(err => {
+        container.innerHTML = `<div class="loading" style="color:var(--pink);"><i class="fa-solid fa-wifi"></i> Gagal terhubung ke server</div>`;
+    });
+}
+
+function syncTheme(){
+    try{
+        const parentHtml = window.parent?.document?.documentElement;
+        if(parentHtml) {
+            const theme = parentHtml.getAttribute('data-theme');
+            if(theme && theme !== 'dark') document.documentElement.setAttribute('data-theme', theme);
+            else document.documentElement.removeAttribute('data-theme');
+            
+            const color = parentHtml.getAttribute('data-color');
+            if(color && color !== 'default') document.documentElement.setAttribute('data-color', color);
+            else document.documentElement.removeAttribute('data-color');
+        }
+    }catch(e){}
+}
+syncTheme();
+fetchLogs();
+setInterval(syncTheme, 1000);
+</script>
+</body>
+</html>

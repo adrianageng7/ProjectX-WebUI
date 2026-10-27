@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark light">
+<title>Connected Clients — ProjectX</title>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+:root {
+    --bg: #18151e;
+    --paper: #24202b;
+    --ink: #fffaf4;
+    --muted: #aaa2ad;
+    --line: #0d0b10;
+    --shadow: 4px 5px 0 #08070a;
+    --panel-alt: #302b38;
+    
+    --pink: #ff5ca8;
+    --yellow: #ffe14a;
+    --cyan: #55dfff;
+    --lime: #b8f34a;
+    --purple: #9b7cff;
+    --orange: #ff9955;
+    
+    --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+:root[data-theme="light"] {
+    --bg: #fff6e8;
+    --paper: #fffdf8;
+    --ink: #17151a;
+    --muted: #77717a;
+    --line: #17151a;
+    --shadow: 4px 5px 0 #17151a;
+    --panel-alt: #e8e5da;
+}
+
+:root[data-color="synthwave"] { --pink:#ff2d95; --yellow:#ff2d95; --cyan:#00e5ff; --lime:#ff2d95; --purple:#c538ff; --orange:#ff6b35; }
+:root[data-color="synthwave"][data-theme="dark"], :root[data-color="synthwave"]:not([data-theme]) { --panel-alt:#2a1035; }
+:root[data-color="toxic"] { --pink:#ff4444; --yellow:#39ff14; --cyan:#39ff14; --lime:#39ff14; --purple:#ff8800; --orange:#ff6600; }
+:root[data-color="toxic"][data-theme="dark"], :root[data-color="toxic"]:not([data-theme]) { --panel-alt:#1a2810; }
+:root[data-color="arctic"] { --pink:#64b5f6; --yellow:#40c4ff; --cyan:#80d8ff; --lime:#82b1ff; --purple:#448aff; --orange:#29b6f6; }
+:root[data-color="arctic"][data-theme="dark"], :root[data-color="arctic"]:not([data-theme]) { --panel-alt:#1a2535; }
+:root[data-color="sunset"] { --pink:#ff1744; --yellow:#ff6d00; --cyan:#ffab40; --lime:#ff9100; --purple:#ff5252; --orange:#ff3d00; }
+:root[data-color="sunset"][data-theme="dark"], :root[data-color="sunset"]:not([data-theme]) { --panel-alt:#351a10; }
+:root[data-color="lavender"] { --pink:#f48fb1; --yellow:#b388ff; --cyan:#ea80fc; --lime:#ce93d8; --purple:#7c4dff; --orange:#e040fb; }
+:root[data-color="lavender"][data-theme="dark"], :root[data-color="lavender"]:not([data-theme]) { --panel-alt:#271a35; }
+
+*{box-sizing:border-box;outline:none}
+body{ margin:0; padding:18px; min-height:100vh; background:var(--bg); color:var(--ink); font-family:var(--font); -webkit-font-smoothing:antialiased; }
+.wrap{max-width:1080px;margin:auto}
+button{font:inherit}
+
+.header{ display:flex; justify-content:space-between; align-items:flex-start; gap:15px; margin-bottom:20px; }
+.eyebrow{ display:inline-flex; align-items:center; gap:6px; padding:5px 9px; border:2px solid var(--line); border-radius:999px; background:var(--lime); box-shadow:3px 3px 0 var(--line); color:#17151a; font-size:9px; font-weight:950; text-transform:uppercase; letter-spacing:.8px; transform:rotate(-2deg); }
+.live-dot{width:6px;height:6px;border-radius:50%;background:#17151a;animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.brand h1{ margin:10px 0 0; font-size:30px; line-height:1; letter-spacing:-1.5px; font-weight:950; }
+.device-name{ margin-top:7px; color:var(--muted); font-size:11px; font-weight:700; }
+.controls{display:flex;gap:8px}
+.btn{ width:39px;height:36px; border:2px solid var(--line); border-radius:11px; background:var(--paper); color:var(--ink); box-shadow:3px 3px 0 var(--line); display:grid; place-items:center; cursor:pointer; transition:.12s; }
+.btn:hover{background:var(--yellow);transform:translate(-1px,-2px)}
+.btn:active{transform:translate(2px,2px);box-shadow:none}
+
+.card{ background:var(--paper); border:2px solid var(--line); border-radius:14px 18px 11px 15px; color:var(--ink); box-shadow:var(--shadow); padding:15px; margin-bottom: 20px; position:relative; }
+.card-header{ display:flex; justify-content:space-between; align-items:center; border-bottom:2px dashed var(--line); padding-bottom:10px; margin-bottom:15px; }
+.card-title{ font-size:14px; font-weight:950; text-transform:uppercase; display:flex; align-items:center; gap:8px; }
+.card-title i{ color:var(--yellow); }
+
+.client-list{ display:flex; flex-direction:column; gap:12px; }
+.client-item{ display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:12px; padding:12px; background:var(--panel-alt); border:2px solid var(--line); border-radius:12px; box-shadow:2px 2px 0 var(--line); transition:.15s; }
+.client-item:hover{ transform:translate(-2px,-2px); box-shadow:4px 4px 0 var(--line); border-color:var(--cyan); }
+.client-icon{ width:40px; height:40px; display:grid; place-items:center; background:var(--purple); color:#17151a; border:2px solid var(--line); border-radius:10px; font-size:18px; box-shadow:2px 2px 0 var(--line); }
+.client-info{ display:flex; flex-direction:column; gap:4px; }
+.client-name{ font-size:14px; font-weight:900; color:var(--ink); }
+.client-meta{ font-size:10px; font-weight:700; color:var(--muted); display:flex; flex-wrap:wrap; gap:8px; }
+.client-ip{ color:var(--cyan); }
+.client-mac{ color:var(--pink); }
+
+.btn-block{ padding:8px 14px; background:var(--pink); color:#ffffff; border:2px solid var(--line); border-radius:8px; font-size:11px; font-weight:950; text-transform:uppercase; letter-spacing:0.5px; cursor:pointer; box-shadow:2px 2px 0 var(--line); transition:all .1s; display:flex; align-items:center; gap:6px; }
+.btn-block:hover{ background:#ff1744; transform:translate(-1px,-1px); box-shadow:3px 3px 0 var(--line); }
+.btn-block:active{ transform:translate(1px,1px); box-shadow:none; }
+
+.btn-limit{ padding:8px 14px; background:var(--yellow); color:#000000; border:2px solid var(--line); border-radius:8px; font-size:11px; font-weight:950; text-transform:uppercase; letter-spacing:0.5px; cursor:pointer; box-shadow:2px 2px 0 var(--line); transition:all .1s; display:flex; align-items:center; gap:6px; }
+.btn-limit:hover{ background:var(--orange); transform:translate(-1px,-1px); box-shadow:3px 3px 0 var(--line); }
+.btn-limit:active{ transform:translate(1px,1px); box-shadow:none; }
+
+.client-actions { display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+.empty-state{ text-align:center; padding:30px 10px; color:var(--muted); font-weight:700; font-size:13px; }
+
+/* ========== MODALS ========== */
+.custom-modal {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    padding: 16px;
+}
+
+.custom-modal.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-card {
+    background: var(--panel-bg);
+    border: 2px solid var(--line);
+    border-radius: 16px;
+    padding: 20px;
+    width: 380px;
+    max-width: 100%;
+    box-shadow: var(--shadow);
+    transform: scale(0.9);
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.custom-modal.show .modal-card {
+    transform: scale(1) rotate(-0.5deg);
+}
+
+.modal-title {
+    font-size: 14px;
+    font-weight: 950;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: var(--primary);
+    color: #17151a;
+    padding: 4px 10px;
+    border: 2px solid var(--line);
+    border-radius: 6px;
+    box-shadow: 2px 2px 0 var(--line);
+    display: inline-block;
+    margin-bottom: 14px;
+    transform: rotate(-2deg);
+}
+
+.modal-body {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink);
+    margin-bottom: 20px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btn-modal {
+    padding: 8px 16px;
+    font-weight: 950;
+    font-size: 12px;
+    border-radius: 8px;
+    border: 2px solid var(--line);
+    cursor: pointer;
+    box-shadow: 3px 3px 0 var(--line);
+    text-transform: uppercase;
+    transition: all 0.1s ease;
+}
+
+.btn-modal:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0px var(--line);
+}
+
+.btn-modal:active {
+    transform: translate(1px, 1px);
+    box-shadow: none;
+}
+
+/* Range Slider */
+.slider-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+    background: var(--panel-alt);
+    padding: 15px;
+    border-radius: 12px;
+    border: 2px dashed var(--line);
+}
+
+.slider-val-display {
+    font-size: 24px;
+    font-weight: 950;
+    color: var(--cyan);
+    text-align: center;
+    letter-spacing: -1px;
+}
+
+input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    background: transparent;
+}
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 24px;
+    width: 24px;
+    border-radius: 50%;
+    background: var(--yellow);
+    cursor: pointer;
+    margin-top: -8px;
+    border: 2px solid var(--line);
+    box-shadow: 2px 2px 0 var(--line);
+}
+input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 8px;
+    cursor: pointer;
+    background: var(--bg);
+    border-radius: 4px;
+    border: 2px solid var(--line);
+}
+
+@media(max-width:600px){
+    body{padding:12px}
+    .client-item{ grid-template-columns:auto 1fr; }
+    .btn-adb{ grid-column:1 / -1; justify-content:center; }
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+
+    <header class="header">
+        <div class="brand">
+            <div class="eyebrow"><span class="live-dot"></span> Network Manager</div>
+            <h1>Clients</h1>
+            <div class="device-name">Manage connected devices & ADB</div>
+        </div>
+        <div class="controls">
+            <button class="btn" onclick="fetchClients()" title="Refresh"><i class="fa-solid fa-rotate-right"></i></button>
+        </div>
+    </header>
+
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-users"></i> Connected Devices</div>
+            <span style="font-size:11px;font-weight:800;color:var(--muted);" id="client-count">0 Devices</span>
+        </div>
+        <div class="client-list" id="client-list">
+            <div class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i> Memuat data...</div>
+        </div>
+    </div>
+
+</div>
+
+<!-- REUSABLE MODAL -->
+<div class="custom-modal" id="actionModal">
+    <div class="modal-card">
+        <div class="modal-title" id="actionModalTitle">Action</div>
+        <div class="modal-body" id="actionModalBody">
+            Body content
+        </div>
+        <div class="modal-actions" id="actionModalActions">
+            <!-- Buttons will be injected here -->
+        </div>
+    </div>
+</div>
+
+<script>
+let currentAdbIp = "";
+
+function fetchClients() {
+    const list = document.getElementById('client-list');
+    list.innerHTML = '<div class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i> Memuat data...</div>';
+    
+    fetch('/api/clients?_=' + Date.now())
+    .then(r => {
+        if (!r.ok) throw new Error("HTTP error " + r.status);
+        return r.json();
+    })
+    .then(data => {
+        list.innerHTML = '';
+        const clients = data.clients || [];
+        document.getElementById('client-count').innerText = clients.length + ' Devices';
+        
+        if (clients.length === 0) {
+            list.innerHTML = '<div class="empty-state"><i class="fa-solid fa-wifi-slash"></i> Tidak ada perangkat yang terhubung</div>';
+            return;
+        }
+
+        clients.forEach(c => {
+            const isWifi = c.interface && (c.interface.includes('wlan') || c.interface.includes('ap') || c.interface.includes('softap'));
+            const icon = c.is_blocked ? 'fa-ban' : (isWifi ? 'fa-wifi' : 'fa-network-wired');
+            const color = c.is_blocked ? 'var(--pink)' : (isWifi ? 'var(--cyan)' : 'var(--purple)');
+
+            const item = document.createElement('div');
+            item.className = 'client-item' + (c.is_blocked ? ' is-blocked' : '');
+            
+            let badges = '';
+            if (c.is_blocked) badges += '<span style="background:var(--pink);color:#fff;font-size:9px;font-weight:900;padding:2px 6px;border-radius:4px;border:1px solid var(--line);">BLOCKED</span> ';
+            if (c.limit_speed) badges += `<span style="background:var(--yellow);color:#000;font-size:9px;font-weight:900;padding:2px 6px;border-radius:4px;border:1px solid var(--line);">${c.limit_speed}</span> `;
+            if (c.vendor) badges += `<span style="background:var(--cyan);color:#000;font-size:9px;font-weight:900;padding:2px 6px;border-radius:4px;border:1px solid var(--line);">${c.vendor}</span> `;
+
+            const blockBtn = c.is_blocked
+                ? `<button class="btn-block" style="background:var(--lime);color:#000;" onclick="unblockClient('${c.ip}','${c.mac || ''}')"><i class="fa-solid fa-lock-open"></i> Buka</button>`
+                : `<button class="btn-block" onclick="blockClient('${c.ip}','${c.mac || ''}','${c.hostname || c.ip}')"><i class="fa-solid fa-ban"></i> Block</button>`;
+
+            item.innerHTML = `
+                <div class="client-icon" style="background:${color}"><i class="fa-solid ${icon}"></i></div>
+                <div class="client-info">
+                    <div class="client-name" style="display:flex;align-items:center;gap:6px;">
+                        <span>${c.hostname || 'Unknown Device'}</span>
+                        ${badges}
+                    </div>
+                    <div class="client-meta">
+                        <span class="client-ip"><i class="fa-solid fa-location-dot"></i> ${c.ip || '-'}</span>
+                        <span class="client-mac"><i class="fa-solid fa-fingerprint"></i> ${c.mac || '-'}</span>
+                        <span>${c.interface || 'wlan0'}</span>
+                        ${c.expires_in ? `<span><i class="fa-solid fa-clock"></i> ${c.expires_in}</span>` : ''}
+                    </div>
+                </div>
+                <div class="client-actions">
+                    <button class="btn-limit" onclick="limitClient('${c.ip}','${c.mac || ''}','${c.interface || ''}','${c.limit_speed || ''}')"><i class="fa-solid fa-gauge-high"></i> ${c.limit_speed || 'Limit'}</button>
+                    ${blockBtn}
+                </div>
+            `;
+            list.appendChild(item);
+        });
+    })
+    .catch(err => {
+        list.innerHTML = '<div class="empty-state"><i class="fa-solid fa-triangle-exclamation"></i> Gagal memuat data perangkat</div>';
+    });
+}
+
+function showModal(title, bodyHTML, buttonsHTML) {
+    document.getElementById('actionModalTitle').innerHTML = title;
+    document.getElementById('actionModalBody').innerHTML = bodyHTML;
+    document.getElementById('actionModalActions').innerHTML = buttonsHTML;
+    document.getElementById('actionModal').classList.add('show');
+}
+
+function closeModal() {
+    document.getElementById('actionModal').classList.remove('show');
+}
+
+function blockClient(ip, mac, name) {
+    const title = '<i class="fa-solid fa-ban"></i> Blokir Perangkat';
+    const body = `Apakah Anda yakin ingin memblokir akses internet untuk perangkat <strong>${name || ip}</strong>?`;
+    const btns = `
+        <button class="btn-modal" onclick="closeModal()" style="background:var(--panel-alt);color:var(--ink);">Batal</button>
+        <button class="btn-modal" onclick="doBlock('${ip}','${mac}')" style="background:var(--pink);color:#ffffff;">Blokir Sekarang</button>
+    `;
+    showModal(title, body, btns);
+}
+
+function doBlock(ip, mac) {
+    closeModal();
+    fetch(`/api/clients/block?ip=${encodeURIComponent(ip)}&mac=${encodeURIComponent(mac)}`)
+    .then(r => r.json())
+    .then(res => {
+        showModal('<i class="fa-solid fa-circle-check"></i> Sukses', 'Client berhasil diblokir!', `<button class="btn-modal" onclick="closeModal();fetchClients();" style="background:var(--cyan);color:#000;">OK</button>`);
+    })
+    .catch(err => {
+        showModal('<i class="fa-solid fa-triangle-exclamation"></i> Error', 'Gagal memblokir client.', `<button class="btn-modal" onclick="closeModal()" style="background:var(--cyan);color:#000;">OK</button>`);
+    });
+}
+
+function unblockClient(ip, mac) {
+    const title = '<i class="fa-solid fa-lock-open"></i> Buka Blokir';
+    const body = `Buka blokir akses internet untuk perangkat <strong>${ip}</strong>?`;
+    const btns = `
+        <button class="btn-modal" onclick="closeModal()" style="background:var(--panel-alt);color:var(--ink);">Batal</button>
+        <button class="btn-modal" onclick="doUnblock('${ip}','${mac}')" style="background:var(--lime);color:#000;">Buka Blokir</button>
+    `;
+    showModal(title, body, btns);
+}
+
+function doUnblock(ip, mac) {
+    closeModal();
+    fetch(`/api/clients/unblock?ip=${encodeURIComponent(ip)}&mac=${encodeURIComponent(mac)}`)
+    .then(r => r.json())
+    .then(res => {
+        showModal('<i class="fa-solid fa-circle-check"></i> Sukses', 'Blokir berhasil dibuka!', `<button class="btn-modal" onclick="closeModal();fetchClients();" style="background:var(--cyan);color:#000;">OK</button>`);
+    })
+    .catch(err => {
+        showModal('<i class="fa-solid fa-triangle-exclamation"></i> Error', 'Gagal membuka blokir.', `<button class="btn-modal" onclick="closeModal()" style="background:var(--cyan);color:#000;">OK</button>`);
+    });
+}
+
+function limitClient(ip, mac, iface, currentLimit) {
+    const title = '<i class="fa-solid fa-gauge-high"></i> Limit Kecepatan';
+    const curVal = parseInt(currentLimit) || 5;
+    const body = `
+        Pilih batas kecepatan (Bandwidth Limit) untuk <strong>${ip}</strong>:
+        <div class="slider-container">
+            <div class="slider-val-display" id="speedValue">${curVal} Mbit</div>
+            <input type="range" id="speedSlider" min="1" max="50" value="${curVal}" oninput="updateSpeedVal(this.value)">
+            <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);font-weight:900;">
+                <span>1 Mbit</span>
+                <span>50 Mbit</span>
+            </div>
+        </div>
+    `;
+    let btns = `<button class="btn-modal" onclick="closeModal()" style="background:var(--panel-alt);color:var(--ink);">Batal</button>`;
+    if (currentLimit) {
+        btns += `<button class="btn-modal" onclick="doRemoveLimit('${ip}','${mac}','${iface}')" style="background:var(--orange);color:#000;">Hapus Limit</button>`;
+    }
+    btns += `<button class="btn-modal" onclick="doLimit('${ip}','${mac}','${iface}')" style="background:var(--yellow);color:#000000;">Terapkan</button>`;
+    showModal(title, body, btns);
+}
+
+function updateSpeedVal(val) {
+    document.getElementById('speedValue').innerText = val + ' Mbit';
+}
+
+function doLimit(ip, mac, iface) {
+    const speed = document.getElementById('speedSlider').value + 'Mbit';
+    closeModal();
+    fetch(`/api/clients/limit?ip=${encodeURIComponent(ip)}&mac=${encodeURIComponent(mac)}&interface=${encodeURIComponent(iface)}&speed=${encodeURIComponent(speed)}`)
+    .then(r => r.json())
+    .then(res => {
+        showModal('<i class="fa-solid fa-circle-check"></i> Sukses', `Kecepatan berhasil dibatasi ke ${speed}!`, `<button class="btn-modal" onclick="closeModal();fetchClients();" style="background:var(--cyan);color:#000;">OK</button>`);
+    })
+    .catch(err => {
+        showModal('<i class="fa-solid fa-triangle-exclamation"></i> Error', 'Gagal membatasi kecepatan.', `<button class="btn-modal" onclick="closeModal()" style="background:var(--cyan);color:#000;">OK</button>`);
+    });
+}
+
+function doRemoveLimit(ip, mac, iface) {
+    closeModal();
+    fetch(`/api/clients/unlimit?ip=${encodeURIComponent(ip)}&mac=${encodeURIComponent(mac)}&interface=${encodeURIComponent(iface)}`)
+    .then(r => r.json())
+    .then(res => {
+        showModal('<i class="fa-solid fa-circle-check"></i> Sukses', 'Limit kecepatan berhasil dihapus!', `<button class="btn-modal" onclick="closeModal();fetchClients();" style="background:var(--cyan);color:#000;">OK</button>`);
+    })
+    .catch(err => {
+        showModal('<i class="fa-solid fa-triangle-exclamation"></i> Error', 'Gagal menghapus limit.', `<button class="btn-modal" onclick="closeModal()" style="background:var(--cyan);color:#000;">OK</button>`);
+    });
+}
+
+function syncTheme(){
+    try{
+        const parentHtml = window.parent?.document?.documentElement;
+        if(parentHtml) {
+            const theme = parentHtml.getAttribute('data-theme');
+            if(theme && theme !== 'dark') document.documentElement.setAttribute('data-theme', theme);
+            else document.documentElement.removeAttribute('data-theme');
+            
+            const color = parentHtml.getAttribute('data-color');
+            if(color && color !== 'default') document.documentElement.setAttribute('data-color', color);
+            else document.documentElement.removeAttribute('data-color');
+        }
+    }catch(e){}
+}
+
+syncTheme();
+fetchClients();
+setInterval(syncTheme, 1000);
+setInterval(fetchClients, 15000);
+</script>
+</body>
+</html>
